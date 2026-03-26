@@ -8,7 +8,13 @@ import type { Role } from "./config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
-  providers: [Google],
+  providers: [
+    Google({
+      // PKCE usa cookies temporales que no sobreviven entre instancias en Vercel.
+      // Con DrizzleAdapter (database strategy) el state check es suficiente.
+      checks: ["state"],
+    }),
+  ],
   callbacks: {
     async session({ session, user }) {
       const [dbUser] = await db
