@@ -3,8 +3,6 @@ export const DEVMINDS_URL = "https://www.devminds.online/";
 export const SHORT_DOMAIN = "l.devminds.online";
 
 // Link limits
-export const ANON_LINK_LIMIT = 5;
-export const ANON_LINK_TTL_HOURS = 24;
 export const USER_LINK_LIMIT = 50;
 export const SHORT_CODE_LENGTH = 7;
 

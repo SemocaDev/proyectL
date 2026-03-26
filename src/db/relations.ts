@@ -6,6 +6,8 @@ import {
   shortLinks,
   linkClicks,
   reports,
+  rolePermissions,
+  permissions,
 } from "./schema";
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -44,5 +46,12 @@ export const reportsRelations = relations(reports, ({ one }) => ({
   reporter: one(users, {
     fields: [reports.reportedBy],
     references: [users.id],
+  }),
+}));
+
+export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => ({
+  permission: one(permissions, {
+    fields: [rolePermissions.permissionId],
+    references: [permissions.id],
   }),
 }));

@@ -12,51 +12,61 @@
   },
   "home": {
     "title": "Shorten. Share. Connect.",
-    "subtitle": "Create a short link in seconds, no account needed.",
+    "subtitle": "Create a short link in seconds. Everything in one place.",
     "inputPlaceholder": "Paste your URL here...",
     "createButton": "Create link",
-    "features": {
-      "fast": "Instant redirect",
-      "analytics": "Detailed analytics",
-      "linkhub": "Your link page"
-    }
+    "feature1": "Instant redirect",
+    "feature2": "Detailed analytics",
+    "feature3": "Your link page"
   },
   "create": {
     "title": "Your link is ready!",
-    "copyButton": "Copy",
+    "copy": "Copy",
     "copied": "Copied!",
-    "chooseMode": "Choose mode",
-    "redirect": "Direct redirect",
+    "chooseMode": "How do you want to use your link?",
+    "redirect": "Shorten link",
+    "redirectDesc": "Direct redirect to a URL.",
     "linkhub": "Link page",
-    "claimBanner": "Sign in to save this link as yours.",
-    "editUrl": "Edit target URL",
-    "save": "Save"
+    "linkhubDesc": "Multiple buttons, bio and customization.",
+    "targetUrl": "Target URL",
+    "titleOptional": "Title (optional)",
+    "titlePlaceholder": "E.g. My portfolio",
+    "customAlias": "Custom alias (optional)",
+    "aliasPlaceholder": "my-alias",
+    "back": "Back",
+    "next": "Continue",
+    "create": "Create link",
+    "created": "Done!",
+    "createdDesc": "Your link was created successfully.",
+    "goToDashboard": "View my links",
+    "createAnother": "Create another"
   },
   "dashboard": {
     "title": "My Links",
+    "welcome": "Welcome",
     "createNew": "Create new link",
+    "totalLinks": "Links created",
     "totalClicks": "Total clicks",
-    "recentLinks": "Recent links",
-    "noLinks": "No links yet. Create your first one!",
+    "activeLinks": "Active links",
+    "recentLinks": "My links",
+    "noLinks": "No links yet.",
+    "createFirst": "Create the first one",
+    "copy": "Copy",
+    "copied": "Copied!",
     "delete": "Delete",
-    "edit": "Edit",
-    "status": {
-      "active": "Active",
-      "disabled": "Disabled",
-      "flagged": "Flagged"
-    }
+    "confirmDelete": "Delete this link? This cannot be undone.",
+    "deleted": "Link deleted.",
+    "deleteFailed": "Could not delete."
   },
   "admin": {
-    "title": "Admin Panel",
+    "title": "Administration",
+    "totalLinks": "Total links",
+    "pendingReports": "Pending reports",
+    "totalUsers": "Users",
     "allLinks": "All links",
+    "allLinksDesc": "View and moderate all system links.",
     "reports": "Reports",
-    "users": "Users",
-    "actions": {
-      "disable": "Disable",
-      "flag": "Flag",
-      "resolve": "Resolve",
-      "dismiss": "Dismiss"
-    }
+    "reportsDesc": "Review and resolve user reports."
   },
   "legal": {
     "terms": "Terms of Service",
@@ -74,7 +84,6 @@
     "reportReason": "Report reason",
     "reportSubmit": "Submit report",
     "reportSuccess": "Report submitted. Thank you.",
-    "linkExpired": "This link has expired.",
     "linkDisabled": "Content not available.",
     "rateLimited": "Too many requests. Try again in {seconds} seconds.",
     "unauthorized": "Unauthorized."

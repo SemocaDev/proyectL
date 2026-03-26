@@ -12,51 +12,61 @@
   },
   "home": {
     "title": "Acorta. Comparte. Conecta.",
-    "subtitle": "Crea un link corto en segundos, sin necesidad de cuenta.",
+    "subtitle": "Crea un link corto en segundos. Todo en un solo lugar.",
     "inputPlaceholder": "Pega tu URL aquí...",
     "createButton": "Crear link",
-    "features": {
-      "fast": "Redirección instantánea",
-      "analytics": "Analíticas detalladas",
-      "linkhub": "Tu página de enlaces"
-    }
+    "feature1": "Redirección instantánea",
+    "feature2": "Analíticas detalladas",
+    "feature3": "Tu página de enlaces"
   },
   "create": {
     "title": "¡Tu link está listo!",
-    "copyButton": "Copiar",
+    "copy": "Copiar",
     "copied": "¡Copiado!",
-    "chooseMode": "Elige el modo",
-    "redirect": "Redirección directa",
+    "chooseMode": "¿Cómo quieres usar tu link?",
+    "redirect": "Acortar link",
+    "redirectDesc": "Redirección directa a una URL.",
     "linkhub": "Página de enlaces",
-    "claimBanner": "Inicia sesión para guardar este link como tuyo.",
-    "editUrl": "Editar URL destino",
-    "save": "Guardar"
+    "linkhubDesc": "Múltiples botones, bio y personalización.",
+    "targetUrl": "URL destino",
+    "titleOptional": "Título (opcional)",
+    "titlePlaceholder": "Ej. Mi portafolio",
+    "customAlias": "Alias personalizado (opcional)",
+    "aliasPlaceholder": "mi-alias",
+    "back": "Volver",
+    "next": "Continuar",
+    "create": "Crear link",
+    "created": "¡Listo!",
+    "createdDesc": "Tu link fue creado exitosamente.",
+    "goToDashboard": "Ver mis links",
+    "createAnother": "Crear otro"
   },
   "dashboard": {
     "title": "Mis Links",
+    "welcome": "Bienvenido",
     "createNew": "Crear nuevo link",
+    "totalLinks": "Links creados",
     "totalClicks": "Clicks totales",
-    "recentLinks": "Links recientes",
-    "noLinks": "Aún no tienes links. ¡Crea el primero!",
+    "activeLinks": "Links activos",
+    "recentLinks": "Mis links",
+    "noLinks": "Aún no tienes links.",
+    "createFirst": "Crear el primero",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
     "delete": "Eliminar",
-    "edit": "Editar",
-    "status": {
-      "active": "Activo",
-      "disabled": "Deshabilitado",
-      "flagged": "Reportado"
-    }
+    "confirmDelete": "¿Eliminar este link? Esta acción no se puede deshacer.",
+    "deleted": "Link eliminado.",
+    "deleteFailed": "No se pudo eliminar."
   },
   "admin": {
-    "title": "Panel de Administración",
+    "title": "Administración",
+    "totalLinks": "Links totales",
+    "pendingReports": "Reportes pendientes",
+    "totalUsers": "Usuarios",
     "allLinks": "Todos los links",
+    "allLinksDesc": "Ver y moderar todos los links del sistema.",
     "reports": "Reportes",
-    "users": "Usuarios",
-    "actions": {
-      "disable": "Deshabilitar",
-      "flag": "Marcar",
-      "resolve": "Resolver",
-      "dismiss": "Descartar"
-    }
+    "reportsDesc": "Revisar y resolver reportes de usuarios."
   },
   "legal": {
     "terms": "Términos de servicio",
@@ -74,7 +84,6 @@
     "reportReason": "Motivo del reporte",
     "reportSubmit": "Enviar reporte",
     "reportSuccess": "Reporte enviado. Gracias.",
-    "linkExpired": "Este link ha expirado.",
     "linkDisabled": "Contenido no disponible.",
     "rateLimited": "Demasiadas solicitudes. Intenta de nuevo en {seconds} segundos.",
     "unauthorized": "No autorizado."

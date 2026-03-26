@@ -5,94 +5,86 @@ import { db } from "@/db";
 import { shortLinks, linkClicks } from "@/db/schema";
 import { createLinkSchema } from "@/lib/schemas";
 import { generateUniqueShortCode } from "@/lib/short-code";
-import {
-  checkRateLimit,
-  anonCreateLimiter,
-  authCreateLimiter,
-} from "@/lib/rate-limit";
-import {
-  ANON_LINK_LIMIT,
-  ANON_LINK_TTL_HOURS,
-  USER_LINK_LIMIT,
-} from "@/lib/config";
-import { eq, count, sql, isNull } from "drizzle-orm";
+import { checkRateLimit, LIMITS } from "@/lib/rate-limit";
+import { USER_LINK_LIMIT } from "@/lib/config";
+import { eq, count, sql } from "drizzle-orm";
 import { headers } from "next/headers";
 import { verifyLinkOwnership } from "@/lib/security";
 
 export async function createLink(input: {
   targetUrl: string;
   mode: "redirect" | "linkhub";
+  title?: string;
+  customAlias?: string;
 }) {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: "Unauthorized" };
+  }
+
   const parsed = createLinkSchema.safeParse(input);
   if (!parsed.success) {
     return { error: "Invalid input" };
   }
 
-  const session = await auth();
   const headerStore = await headers();
   const ip =
     headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 
-  if (session?.user) {
-    const { success } = await checkRateLimit(
-      authCreateLimiter,
-      session.user.id
-    );
-    if (!success) return { error: "Rate limit exceeded" };
+  // Rate limit por usuario
+  const { success } = await checkRateLimit(
+    `create:${session.user.id}`,
+    LIMITS.CREATE_AUTH.limit,
+    LIMITS.CREATE_AUTH.windowMs
+  );
+  if (!success) return { error: "Rate limit exceeded. Try again in a minute." };
 
-    const [{ total }] = await db
-      .select({ total: count() })
+  // Límite de links por usuario
+  const [{ total }] = await db
+    .select({ total: count() })
+    .from(shortLinks)
+    .where(eq(shortLinks.ownerId, session.user.id));
+
+  if (total >= USER_LINK_LIMIT) {
+    return { error: `Link limit reached (${USER_LINK_LIMIT})` };
+  }
+
+  // Verificar alias personalizado si se provee
+  if (parsed.data.customAlias) {
+    const [existing] = await db
+      .select({ id: shortLinks.id })
       .from(shortLinks)
-      .where(eq(shortLinks.ownerId, session.user.id));
+      .where(eq(shortLinks.shortCode, parsed.data.customAlias))
+      .limit(1);
 
-    if (total >= USER_LINK_LIMIT) {
-      return { error: `Link limit reached (${USER_LINK_LIMIT})` };
-    }
-  } else {
-    const { success } = await checkRateLimit(anonCreateLimiter, ip);
-    if (!success) return { error: "Rate limit exceeded" };
-
-    const [{ total }] = await db
-      .select({ total: count() })
-      .from(shortLinks)
-      .where(
-        sql`${shortLinks.ownerId} IS NULL AND ${shortLinks.createdAt} > NOW() - INTERVAL '24 hours'`
-      );
-
-    if (total >= ANON_LINK_LIMIT) {
-      return { error: `Anonymous link limit reached (${ANON_LINK_LIMIT})` };
+    if (existing) {
+      return { error: "That alias is already taken" };
     }
   }
 
-  const shortCode = await generateUniqueShortCode();
-
-  const expiresAt = session?.user
-    ? null
-    : new Date(Date.now() + ANON_LINK_TTL_HOURS * 60 * 60 * 1000);
+  const shortCode = parsed.data.customAlias ?? (await generateUniqueShortCode());
 
   const [link] = await db
     .insert(shortLinks)
     .values({
       shortCode,
-      ownerId: session?.user?.id ?? null,
+      ownerId: session.user.id,
       mode: parsed.data.mode,
       targetUrl: parsed.data.targetUrl,
-      isClaimed: !!session?.user,
-      expiresAt,
+      title: parsed.data.title ?? null,
     })
     .returning();
 
   return {
     shortCode: link.shortCode,
     shortUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${link.shortCode}`,
+    id: link.id,
   };
 }
 
 export async function deleteLink(linkId: string) {
   await verifyLinkOwnership(linkId);
-
   await db.delete(shortLinks).where(eq(shortLinks.id, linkId));
-
   return { success: true };
 }
 
@@ -106,13 +98,10 @@ export async function getUserLinks() {
       shortCode: shortLinks.shortCode,
       mode: shortLinks.mode,
       targetUrl: shortLinks.targetUrl,
+      title: shortLinks.title,
       status: shortLinks.status,
-      isClaimed: shortLinks.isClaimed,
+      clickCount: shortLinks.clickCount,
       createdAt: shortLinks.createdAt,
-      clickCount: sql<number>`(
-        SELECT COUNT(*) FROM ${linkClicks}
-        WHERE ${linkClicks.linkId} = ${shortLinks.id}
-      )`,
     })
     .from(shortLinks)
     .where(eq(shortLinks.ownerId, session.user.id))
@@ -123,13 +112,18 @@ export async function getUserLinks() {
 
 export async function updateLink(
   linkId: string,
-  data: { targetUrl?: string; mode?: "redirect" | "linkhub" }
+  data: {
+    targetUrl?: string;
+    mode?: "redirect" | "linkhub";
+    title?: string;
+    landingData?: Record<string, unknown>;
+  }
 ) {
   await verifyLinkOwnership(linkId);
 
   await db
     .update(shortLinks)
-    .set(data)
+    .set({ ...data, updatedAt: new Date() })
     .where(eq(shortLinks.id, linkId));
 
   return { success: true };
