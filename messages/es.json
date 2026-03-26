@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "DevMinds Links — Acortador de URLs y Link-in-Bio",
+    "description": "Crea links cortos al instante o arma tu página de enlaces personalizada."
+  },
+  "nav": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "admin": "Admin",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión"
+  },
+  "home": {
+    "title": "Acorta. Comparte. Conecta.",
+    "subtitle": "Crea un link corto en segundos, sin necesidad de cuenta.",
+    "inputPlaceholder": "Pega tu URL aquí...",
+    "createButton": "Crear link",
+    "features": {
+      "fast": "Redirección instantánea",
+      "analytics": "Analíticas detalladas",
+      "linkhub": "Tu página de enlaces"
+    }
+  },
+  "create": {
+    "title": "¡Tu link está listo!",
+    "copyButton": "Copiar",
+    "copied": "¡Copiado!",
+    "chooseMode": "Elige el modo",
+    "redirect": "Redirección directa",
+    "linkhub": "Página de enlaces",
+    "claimBanner": "Inicia sesión para guardar este link como tuyo.",
+    "editUrl": "Editar URL destino",
+    "save": "Guardar"
+  },
+  "dashboard": {
+    "title": "Mis Links",
+    "createNew": "Crear nuevo link",
+    "totalClicks": "Clicks totales",
+    "recentLinks": "Links recientes",
+    "noLinks": "Aún no tienes links. ¡Crea el primero!",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "status": {
+      "active": "Activo",
+      "disabled": "Deshabilitado",
+      "flagged": "Reportado"
+    }
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "allLinks": "Todos los links",
+    "reports": "Reportes",
+    "users": "Usuarios",
+    "actions": {
+      "disable": "Deshabilitar",
+      "flag": "Marcar",
+      "resolve": "Resolver",
+      "dismiss": "Descartar"
+    }
+  },
+  "legal": {
+    "terms": "Términos de servicio",
+    "privacy": "Política de privacidad"
+  },
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "retry": "Reintentar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "reportLink": "Reportar link",
+    "reportReason": "Motivo del reporte",
+    "reportSubmit": "Enviar reporte",
+    "reportSuccess": "Reporte enviado. Gracias.",
+    "linkExpired": "Este link ha expirado.",
+    "linkDisabled": "Contenido no disponible.",
+    "rateLimited": "Demasiadas solicitudes. Intenta de nuevo en {seconds} segundos.",
+    "unauthorized": "No autorizado."
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados",
+    "devBy": "Desarrollado por"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "meta": {
+    "title": "DevMinds Links — URL Shortener & Link-in-Bio",
+    "description": "Create short links instantly or build your custom link page."
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "home": {
+    "title": "Shorten. Share. Connect.",
+    "subtitle": "Create a short link in seconds, no account needed.",
+    "inputPlaceholder": "Paste your URL here...",
+    "createButton": "Create link",
+    "features": {
+      "fast": "Instant redirect",
+      "analytics": "Detailed analytics",
+      "linkhub": "Your link page"
+    }
+  },
+  "create": {
+    "title": "Your link is ready!",
+    "copyButton": "Copy",
+    "copied": "Copied!",
+    "chooseMode": "Choose mode",
+    "redirect": "Direct redirect",
+    "linkhub": "Link page",
+    "claimBanner": "Sign in to save this link as yours.",
+    "editUrl": "Edit target URL",
+    "save": "Save"
+  },
+  "dashboard": {
+    "title": "My Links",
+    "createNew": "Create new link",
+    "totalClicks": "Total clicks",
+    "recentLinks": "Recent links",
+    "noLinks": "No links yet. Create your first one!",
+    "delete": "Delete",
+    "edit": "Edit",
+    "status": {
+      "active": "Active",
+      "disabled": "Disabled",
+      "flagged": "Flagged"
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "allLinks": "All links",
+    "reports": "Reports",
+    "users": "Users",
+    "actions": {
+      "disable": "Disable",
+      "flag": "Flag",
+      "resolve": "Resolve",
+      "dismiss": "Dismiss"
+    }
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "reportLink": "Report link",
+    "reportReason": "Report reason",
+    "reportSubmit": "Submit report",
+    "reportSuccess": "Report submitted. Thank you.",
+    "linkExpired": "This link has expired.",
+    "linkDisabled": "Content not available.",
+    "rateLimited": "Too many requests. Try again in {seconds} seconds.",
+    "unauthorized": "Unauthorized."
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "devBy": "Developed by"
+  }
+}
