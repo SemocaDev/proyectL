@@ -4,12 +4,6 @@ export const createLinkSchema = z.object({
   targetUrl: z.url().max(2048),
   mode: z.enum(["redirect", "linkhub"]),
   title: z.string().max(100).optional(),
-  customAlias: z
-    .string()
-    .min(5)
-    .max(12)
-    .regex(/^[a-zA-Z0-9]+$/, "Only letters and numbers allowed")
-    .optional(),
 });
 
 export const updateLinkSchema = z.object({

@@ -15,7 +15,6 @@ export async function createLink(input: {
   targetUrl: string;
   mode: "redirect" | "linkhub";
   title?: string;
-  customAlias?: string;
 }) {
   const session = await auth();
   if (!session?.user) {
@@ -49,20 +48,7 @@ export async function createLink(input: {
     return { error: `Link limit reached (${USER_LINK_LIMIT})` };
   }
 
-  // Verificar alias personalizado si se provee
-  if (parsed.data.customAlias) {
-    const [existing] = await db
-      .select({ id: shortLinks.id })
-      .from(shortLinks)
-      .where(eq(shortLinks.shortCode, parsed.data.customAlias))
-      .limit(1);
-
-    if (existing) {
-      return { error: "That alias is already taken" };
-    }
-  }
-
-  const shortCode = parsed.data.customAlias ?? (await generateUniqueShortCode());
+  const shortCode = await generateUniqueShortCode();
 
   const [link] = await db
     .insert(shortLinks)

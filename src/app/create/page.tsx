@@ -22,7 +22,6 @@ function CreateWizard() {
   const [mode, setMode] = useState<Mode>("redirect");
   const [url, setUrl] = useState(initialUrl);
   const [title, setTitle] = useState("");
-  const [customAlias, setCustomAlias] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ shortUrl: string; shortCode: string } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -33,7 +32,6 @@ function CreateWizard() {
       targetUrl: url,
       mode,
       title: title || undefined,
-      customAlias: customAlias || undefined,
     });
     setLoading(false);
 
@@ -156,27 +154,7 @@ function CreateWizard() {
                   />
                 </div>
 
-                {/* Alias personalizado */}
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium uppercase tracking-wider text-ginnezumi">
-                    {t("customAlias")}
-                  </label>
-                  <div className="flex items-center gap-0 overflow-hidden rounded-lg border border-hai bg-white focus-within:border-beni focus-within:ring-1 focus-within:ring-beni">
-                    <span className="border-r border-hai bg-shironeri px-3 py-3 text-xs text-ginnezumi">
-                      l.devminds.online/
-                    </span>
-                    <input
-                      type="text"
-                      value={customAlias}
-                      onChange={(e) =>
-                        setCustomAlias(e.target.value.replace(/[^a-zA-Z0-9]/g, ""))
-                      }
-                      maxLength={12}
-                      className="flex-1 bg-transparent px-3 py-3 text-sm text-sumi focus:outline-none"
-                      placeholder={t("aliasPlaceholder")}
-                    />
-                  </div>
-                </div>
+
               </div>
 
               <div className="flex gap-3">
@@ -233,7 +211,6 @@ function CreateWizard() {
                     setStep(1);
                     setUrl("");
                     setTitle("");
-                    setCustomAlias("");
                     setResult(null);
                   }}
                   className="flex-1 rounded-lg bg-beni py-3 text-sm font-medium text-white transition-colors hover:bg-beni/90"
