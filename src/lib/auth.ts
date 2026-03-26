@@ -4,6 +4,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import type { Role } from "./config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
@@ -17,7 +18,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         .limit(1);
 
       session.user.id = user.id;
-      session.user.role = dbUser?.role ?? "USER";
+      session.user.role = (dbUser?.role ?? "USER") as Role;
       return session;
     },
   },
