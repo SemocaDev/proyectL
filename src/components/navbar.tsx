@@ -32,7 +32,7 @@ export function Navbar() {
             height={24}
             className="transition-opacity duration-200 group-hover:opacity-80"
           />
-          <span className="font-credit text-sm font-semibold tracking-tight text-sumi transition-colors duration-200 group-hover:text-beni">
+          <span className="font-brand text-base font-light italic tracking-wide text-sumi transition-colors duration-200 group-hover:text-beni">
             DevMinds Links
           </span>
         </Link>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Doto } from "next/font/google";
+import { Inter, Doto, Cormorant_Garamond } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SessionProvider } from "next-auth/react";
@@ -30,6 +30,14 @@ const doto = Doto({
   weight: ["400", "700"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["300", "400", "500"],
+  style: ["normal", "italic"],
+});
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -39,7 +47,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${inter.variable} ${doto.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${doto.variable} ${cormorant.variable}`}>
       <body>
         <SessionProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
