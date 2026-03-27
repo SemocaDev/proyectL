@@ -22,14 +22,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async session({ session, user }) {
-      const [dbUser] = await db
-        .select({ role: users.role })
-        .from(users)
-        .where(eq(users.id, user.id))
-        .limit(1);
+      try {
+        const [dbUser] = await db
+          .select({ role: users.role })
+          .from(users)
+          .where(eq(users.id, user.id))
+          .limit(1);
 
-      session.user.id = user.id;
-      session.user.role = (dbUser?.role ?? "USER") as Role;
+        session.user.id = user.id;
+        session.user.role = (dbUser?.role ?? "USER") as Role;
+      } catch {
+        // DB unavailable or session stale — return session without role
+        session.user.id = user.id;
+        session.user.role = "USER" as Role;
+      }
       return session;
     },
   },
