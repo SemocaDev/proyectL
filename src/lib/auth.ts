@@ -21,41 +21,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      // Si el usuario pasó por el modal de consentimiento y aún no tiene
-      // termsAcceptedAt, lo marcamos ahora (primera vez o usuario legacy).
-      try {
-        if (!user.id) return true;
-        const [dbUser] = await db
-          .select({ termsAcceptedAt: users.termsAcceptedAt })
-          .from(users)
-          .where(eq(users.id, user.id))
-          .limit(1);
-        if (!dbUser?.termsAcceptedAt) {
-          await db
-            .update(users)
-            .set({ termsAcceptedAt: new Date() })
-            .where(eq(users.id, user.id));
-        }
-      } catch {
-        // No bloquear el login si falla este update
-      }
-      return true;
-    },
     async session({ session, user }) {
       try {
         const [dbUser] = await db
-          .select({ role: users.role })
+          .select({ role: users.role, termsAcceptedAt: users.termsAcceptedAt })
           .from(users)
           .where(eq(users.id, user.id))
           .limit(1);
 
         session.user.id = user.id;
         session.user.role = (dbUser?.role ?? "USER") as Role;
+        session.user.termsAcceptedAt = dbUser?.termsAcceptedAt ?? null;
       } catch {
-        // DB unavailable or session stale — return session without role
         session.user.id = user.id;
         session.user.role = "USER" as Role;
+        session.user.termsAcceptedAt = null;
       }
       return session;
     },

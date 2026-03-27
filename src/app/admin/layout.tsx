@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { TermsGate } from "@/components/auth/terms-gate";
 
 export default async function AdminLayout({
   children,
@@ -16,5 +17,5 @@ export default async function AdminLayout({
     redirect("/dashboard");
   }
 
-  return <>{children}</>;
+  return <TermsGate>{children}</TermsGate>;
 }

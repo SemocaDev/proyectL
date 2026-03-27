@@ -66,9 +66,8 @@ export function proxy(request: NextRequest) {
 
     if (isProtected && !hasSession(request)) {
       const url = request.nextUrl.clone();
-      const callbackUrl = request.nextUrl.pathname + request.nextUrl.search;
       url.pathname = "/";
-      url.search = `?login=1&callbackUrl=${encodeURIComponent(callbackUrl)}`;
+      url.search = "";
       return NextResponse.redirect(url);
     }
 

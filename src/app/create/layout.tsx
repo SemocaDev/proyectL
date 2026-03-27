@@ -1,6 +1,6 @@
 import { TermsGate } from "@/components/auth/terms-gate";
 
-export default function DashboardLayout({
+export default function CreateLayout({
   children,
 }: {
   children: React.ReactNode;
