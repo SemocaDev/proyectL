@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getTranslations } from "next-intl/server";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Privacy Policy for DevMinds Links — how we collect, use and protect your data.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "https://l.devminds.online/legal/privacy" },
+};
 
 export default async function PrivacyPage() {
   const t = await getTranslations("legal");

@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { WagaraPattern } from "@/components/patterns";
 import { UrlInput } from "@/components/home/url-input";
 import { getTranslations } from "next-intl/server";
 import { colors } from "@/lib/css-vars";
+
+export const metadata: Metadata = {
+  title: "DevMinds Links — URL Shortener & Link-in-Bio",
+  description:
+    "Create short links instantly or build your custom link-in-bio page. Fast redirects, detailed analytics and beautiful Japanese-inspired designs.",
+  alternates: {
+    canonical: "https://l.devminds.online",
+  },
+};
 
 export default async function HomePage() {
   const t = await getTranslations("home");

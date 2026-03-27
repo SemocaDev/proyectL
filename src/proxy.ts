@@ -18,7 +18,7 @@ const APP_ROUTES = new Set([
 // Only matches single-segment paths that are NOT app routes.
 const SHORT_CODE_REGEX = /^\/([a-zA-Z0-9]{5,12})$/;
 
-const LOCALES = ["es", "en"] as const;
+const LOCALES = ["es", "en", "ja"] as const;
 const DEFAULT_LOCALE = "es";
 
 function hasSession(request: NextRequest): boolean {

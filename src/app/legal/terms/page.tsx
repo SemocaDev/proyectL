@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getTranslations } from "next-intl/server";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Terms of Service for DevMinds Links — URL shortener and link-in-bio platform.",
+  robots: { index: false, follow: false },
+  alternates: { canonical: "https://l.devminds.online/legal/terms" },
+};
 
 export default async function TermsPage() {
   const t = await getTranslations("legal");
