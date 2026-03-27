@@ -88,6 +88,20 @@
     "rateLimited": "Demasiadas solicitudes. Intenta de nuevo en {seconds} segundos.",
     "unauthorized": "No autorizado."
   },
+  "notFound": {
+    "title": "Página no encontrada",
+    "description": "El link que buscas no existe o ha sido deshabilitado.",
+    "backHome": "Volver al inicio"
+  },
+  "validation": {
+    "invalidUrl": "Ingresa una URL válida (ej. https://ejemplo.com)",
+    "urlRequired": "La URL es obligatoria",
+    "titleTooLong": "El título no puede exceder 100 caracteres",
+    "linkCreated": "¡Link creado exitosamente!",
+    "linkCreateError": "No se pudo crear el link. Intenta de nuevo.",
+    "copied": "¡Copiado al portapapeles!",
+    "loginRequired": "Inicia sesión para continuar"
+  },
   "footer": {
     "rights": "Todos los derechos reservados",
     "devBy": "Desarrollado por"

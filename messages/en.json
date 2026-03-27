@@ -88,6 +88,20 @@
     "rateLimited": "Too many requests. Try again in {seconds} seconds.",
     "unauthorized": "Unauthorized."
   },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The link you're looking for doesn't exist or has been disabled.",
+    "backHome": "Back to home"
+  },
+  "validation": {
+    "invalidUrl": "Enter a valid URL (e.g. https://example.com)",
+    "urlRequired": "URL is required",
+    "titleTooLong": "Title cannot exceed 100 characters",
+    "linkCreated": "Link created successfully!",
+    "linkCreateError": "Could not create link. Try again.",
+    "copied": "Copied to clipboard!",
+    "loginRequired": "Sign in to continue"
+  },
   "footer": {
     "rights": "All rights reserved",
     "devBy": "Developed by"

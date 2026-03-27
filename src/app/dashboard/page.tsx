@@ -23,25 +23,25 @@ export default async function DashboardPage() {
 
         <div className="relative z-10 mx-auto max-w-5xl space-y-10">
           {/* Header */}
-          <div className="flex items-end justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-1">
               <p className="text-xs font-medium uppercase tracking-wider text-ginnezumi">
                 {t("welcome")}
               </p>
-              <h1 className="text-3xl font-light text-sumi">
+              <h1 className="text-2xl font-light text-sumi sm:text-3xl">
                 {session?.user?.name?.split(" ")[0] ?? t("title")}
               </h1>
             </div>
             <Link
               href="/create"
-              className="rounded-lg bg-beni px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-beni px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 sm:w-auto"
             >
               + {t("createNew")}
             </Link>
           </div>
 
           {/* Stats rápidas */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
             <StatCard label={t("totalLinks")} value={String(links.length)} />
             <StatCard label={t("totalClicks")} value={String(totalClicks)} />
             <StatCard

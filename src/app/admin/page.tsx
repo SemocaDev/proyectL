@@ -29,19 +29,19 @@ export default async function AdminPage() {
           <h1 className="text-3xl font-light text-sumi">Admin</h1>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 mb-10">
           <StatCard label={t("totalLinks")} value={String(totalLinks)} />
           <StatCard label={t("pendingReports")} value={String(totalReports)} accent={totalReports > 0} />
           <StatCard label={t("totalUsers")} value={String(totalUsers)} />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Link href="/admin/links" className="rounded-lg border border-hai bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-            <p className="text-lg font-light text-sumi">{t("allLinks")}</p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+          <Link href="/admin/links" className="rounded-lg border border-hai bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+            <p className="text-base font-light text-sumi sm:text-lg">{t("allLinks")}</p>
             <p className="mt-1 text-sm text-ginnezumi">{t("allLinksDesc")}</p>
           </Link>
-          <Link href="/admin/reports" className="rounded-lg border border-hai bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-            <p className="text-lg font-light text-sumi">{t("reports")}</p>
+          <Link href="/admin/reports" className="rounded-lg border border-hai bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6">
+            <p className="text-base font-light text-sumi sm:text-lg">{t("reports")}</p>
             <p className="mt-1 text-sm text-ginnezumi">{t("reportsDesc")}</p>
           </Link>
         </div>

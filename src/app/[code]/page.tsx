@@ -28,10 +28,19 @@ export default async function ShortCodePage({ params }: Props) {
 
   if (!success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-shironeri">
-        <div className="text-center space-y-2">
-          <p className="text-2xl font-light text-sumi">429</p>
-          <p className="text-sm text-ginnezumi">Too many requests. Try again later.</p>
+      <div className="flex min-h-screen items-center justify-center bg-shironeri px-4">
+        <div className="text-center space-y-4">
+          <p className="text-6xl font-light text-beni/20 sm:text-8xl">429</p>
+          <div className="space-y-1">
+            <p className="text-xl font-light text-sumi">Too many requests</p>
+            <p className="text-sm text-ginnezumi">Please wait a moment and try again.</p>
+          </div>
+          <a
+            href="/"
+            className="inline-block rounded-lg border border-hai px-5 py-2 text-sm text-ginnezumi transition-colors hover:border-sumi hover:text-sumi"
+          >
+            Go home
+          </a>
         </div>
       </div>
     );
@@ -64,25 +73,32 @@ export default async function ShortCodePage({ params }: Props) {
   // --- Mode: linkhub ---
   const data = (link.landingData as LandingData) ?? {};
   const accent = data.theme?.accentColor ?? "#B94047";
+  const displayTitle = data.title || link.title;
 
   return (
     <div className="relative min-h-screen bg-shironeri">
       <WagaraPattern pattern="seigaiha" opacity={0.025} />
 
-      <div className="relative z-10 mx-auto max-w-md px-4 py-16">
-        <div className="mb-10 text-center space-y-3">
+      <div className="relative z-10 mx-auto max-w-md px-4 py-12 sm:py-16">
+        {/* Profile header */}
+        <div className="mb-8 text-center space-y-3 sm:mb-10">
           <div
             className="mx-auto h-px w-12"
             style={{ backgroundColor: accent }}
           />
-          {data.title && (
-            <h1 className="text-2xl font-light text-sumi">{data.title}</h1>
+          {displayTitle && (
+            <h1 className="text-xl font-light text-sumi sm:text-2xl">
+              {displayTitle}
+            </h1>
           )}
           {data.bio && (
-            <p className="text-sm leading-relaxed text-ginnezumi">{data.bio}</p>
+            <p className="mx-auto max-w-xs text-sm leading-relaxed text-ginnezumi">
+              {data.bio}
+            </p>
           )}
         </div>
 
+        {/* Link buttons */}
         {data.links && data.links.length > 0 ? (
           <div className="space-y-3">
             {data.links.map((item, i) => (
@@ -91,7 +107,7 @@ export default async function ShortCodePage({ params }: Props) {
                 href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block w-full rounded-lg border border-hai bg-white px-6 py-4 text-center text-sm font-medium text-sumi shadow-sm transition-all hover:shadow-md"
+                className="block w-full rounded-lg border border-hai bg-white px-5 py-3.5 text-center text-sm font-medium text-sumi shadow-sm transition-all hover:shadow-md active:scale-[0.98] sm:px-6 sm:py-4"
                 style={{
                   borderLeftColor: accent,
                   borderLeftWidth: "3px",
@@ -102,15 +118,21 @@ export default async function ShortCodePage({ params }: Props) {
             ))}
           </div>
         ) : (
-          <p className="text-center text-sm text-ginnezumi">
-            No links configured yet.
-          </p>
+          <div className="rounded-lg border border-dashed border-hai bg-white/60 py-12 text-center">
+            <p className="text-sm text-ginnezumi">
+              This page is being set up.
+            </p>
+            <p className="mt-1 text-xs text-ginnezumi/50">
+              Links will appear here soon.
+            </p>
+          </div>
         )}
 
-        <div className="mt-12 text-center">
+        {/* Hub footer */}
+        <div className="mt-10 text-center sm:mt-12">
           <a
             href="https://l.devminds.online"
-            className="text-xs text-ginnezumi/40 transition-colors hover:text-ginnezumi"
+            className="text-[11px] text-ginnezumi/30 transition-colors hover:text-ginnezumi/60"
           >
             Powered by DevMinds Links
           </a>

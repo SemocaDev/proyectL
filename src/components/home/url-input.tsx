@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 interface UrlInputProps {
@@ -15,11 +16,12 @@ export function UrlInput({ placeholder, cta }: UrlInputProps) {
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const t = useTranslations("validation");
 
   function isValidUrl(value: string) {
     try {
-      new URL(value);
-      return true;
+      const parsed = new URL(value);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
     } catch {
       return false;
     }
@@ -28,15 +30,17 @@ export function UrlInput({ placeholder, cta }: UrlInputProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!url.trim()) return;
+    if (!url.trim()) {
+      toast.error(t("urlRequired"));
+      return;
+    }
 
     if (!isValidUrl(url)) {
-      toast.error("Ingresa una URL válida (ej. https://ejemplo.com)");
+      toast.error(t("invalidUrl"));
       return;
     }
 
     if (!session?.user) {
-      // Guardar URL para después del login y redirigir a login
       sessionStorage.setItem("pending_url", url);
       signIn("google", { callbackUrl: `/create?url=${encodeURIComponent(url)}` });
       return;
@@ -54,15 +58,15 @@ export function UrlInput({ placeholder, cta }: UrlInputProps) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder={placeholder}
-          className="flex-1 rounded-lg border border-hai bg-white px-5 py-3.5 text-sm text-sumi shadow-sm placeholder:text-ginnezumi/40 focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni transition-colors"
+          className="flex-1 rounded-lg border border-hai bg-white px-4 py-3 text-sm text-sumi shadow-sm placeholder:text-ginnezumi/40 focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni transition-colors sm:px-5 sm:py-3.5"
           autoFocus
         />
         <button
           type="submit"
           disabled={loading}
-          className="whitespace-nowrap rounded-lg bg-beni px-7 py-3.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-beni focus:ring-offset-2"
+          className="whitespace-nowrap rounded-lg bg-beni px-7 py-3 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-beni focus:ring-offset-2 sm:py-3.5"
         >
-          {loading ? "…" : cta}
+          {loading ? "..." : cta}
         </button>
       </div>
     </form>

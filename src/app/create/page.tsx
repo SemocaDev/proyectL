@@ -15,6 +15,7 @@ function CreateWizard() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("create");
+  const tv = useTranslations("validation");
 
   const initialUrl = searchParams.get("url") ?? "";
 
@@ -27,6 +28,21 @@ function CreateWizard() {
   const [copied, setCopied] = useState(false);
 
   async function handleCreate() {
+    if (!url.trim()) {
+      toast.error(tv("urlRequired"));
+      return;
+    }
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        toast.error(tv("invalidUrl"));
+        return;
+      }
+    } catch {
+      toast.error(tv("invalidUrl"));
+      return;
+    }
+
     setLoading(true);
     const res = await createLink({
       targetUrl: url,
@@ -40,6 +56,7 @@ function CreateWizard() {
       return;
     }
 
+    toast.success(tv("linkCreated"));
     setResult({ shortUrl: res.shortUrl!, shortCode: res.shortCode! });
     setStep(3);
   }
@@ -47,6 +64,7 @@ function CreateWizard() {
   async function copyUrl() {
     if (!result) return;
     await navigator.clipboard.writeText(result.shortUrl);
+    toast.success(tv("copied"));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
