@@ -58,14 +58,13 @@
 | Ruta | Acceso | Guard |
 |------|--------|-------|
 | `/` | Público | — |
-| `/create` | Requiere auth | `middleware.ts` → redirect a `/` |
-| `/dashboard` | USER, ADMIN | `middleware.ts` → redirect a `/` |
-| `/admin` | ADMIN | `middleware.ts` → redirect a `/dashboard` |
+| `/create` | Público | — |
+| `/dashboard` | USER, ADMIN | `proxy.ts` → redirect a `/` si no hay sesión |
+| `/admin` | ADMIN | `proxy.ts` → redirect a `/` si no hay sesión; layout verifica role |
 | `/admin/links` | ADMIN | Hereda de `/admin` guard |
 | `/admin/reports` | ADMIN | Hereda de `/admin` guard |
 | `/legal/*` | Público | — |
-| `/hub/[code]` | Público | — |
-| `/[code]` | Público | middleware rewrite → `/api/redirect/[code]` |
+| `/[code]` | Público | Server Component directo (redirect 301 o render linkhub) |
 | `/api/auth/*` | Público | Auth.js handlers |
 
 ---

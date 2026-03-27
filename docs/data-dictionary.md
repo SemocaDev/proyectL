@@ -171,7 +171,6 @@
 | createLinkSchema | targetUrl | string | url(), max 2048 |
 | createLinkSchema | mode | enum | "redirect" \| "linkhub" |
 | createLinkSchema | title | string? | max 100 |
-| createLinkSchema | customAlias | string? | min 5, max 12, /^[a-zA-Z0-9]+$/ |
 | updateLinkSchema | targetUrl | string? | url(), max 2048 |
 | updateLinkSchema | mode | enum? | "redirect" \| "linkhub" |
 | updateLinkSchema | landingData | object? | Ver landingDataSchema |
