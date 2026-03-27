@@ -76,10 +76,10 @@ export function LinkCard({ link }: { link: LinkRow }) {
       </div>
 
       {/* Actions */}
-      <div className="mt-3 flex items-center gap-2 border-t border-hai/40 pt-3">
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-hai/40 pt-3">
         <button
           onClick={handleCopy}
-          className="flex-1 rounded-md border border-hai py-1.5 text-xs text-ginnezumi transition-colors hover:border-sumi hover:text-sumi sm:flex-none sm:px-4"
+          className="rounded-md border border-hai px-3 py-1.5 text-xs text-ginnezumi transition-colors hover:border-sumi hover:text-sumi sm:px-4"
         >
           {t("copy")}
         </button>

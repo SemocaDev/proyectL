@@ -77,95 +77,109 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
     }
   }
 
-  return (
-    <div className="flex flex-1 flex-col lg:flex-row lg:gap-0">
-      {/* Editor panel — left side */}
-      <div className="flex-1 overflow-y-auto border-r border-hai/30 px-4 py-6 sm:px-6 lg:max-w-lg">
-        <div className="space-y-6">
-          {/* Basic info */}
-          <BasicInfo
-            mode={mode}
-            title={title}
-            bio={bio}
-            targetUrl={targetUrl}
-            onTitleChange={setTitle}
-            onBioChange={setBio}
-            onTargetUrlChange={setTargetUrl}
+  const isLinkhub = mode === "linkhub";
+
+  const editorContent = (
+    <div className="space-y-6">
+      {/* Basic info */}
+      <BasicInfo
+        mode={mode}
+        title={title}
+        bio={bio}
+        targetUrl={targetUrl}
+        onTitleChange={setTitle}
+        onBioChange={setBio}
+        onTargetUrlChange={setTargetUrl}
+      />
+
+      {/* Redirect options */}
+      {mode === "redirect" && (
+        <RedirectOptions
+          delay={redirectDelay}
+          onDelayChange={setRedirectDelay}
+        />
+      )}
+
+      {/* Links section — linkhub only */}
+      {isLinkhub && (
+        <LinksSection links={links} onChange={setLinks} />
+      )}
+
+      {/* Theme — linkhub only */}
+      {isLinkhub && (
+        <>
+          <ThemeSection
+            theme={{ ...theme, buttonStyle }}
+            onChange={(t) => {
+              const { buttonStyle: bs, ...rest } = t;
+              setTheme(rest);
+              if (bs) setButtonStyle(bs);
+            }}
           />
+          <ButtonStylePicker
+            style={buttonStyle}
+            onChange={setButtonStyle}
+          />
+        </>
+      )}
 
-          {/* Redirect options */}
-          {mode === "redirect" && (
-            <RedirectOptions
-              delay={redirectDelay}
-              onDelayChange={setRedirectDelay}
-            />
-          )}
+      {/* Actions */}
+      <div className="flex gap-3 border-t border-hai/30 pt-5">
+        {/* Mobile preview button */}
+        {isLinkhub && (
+          <button
+            type="button"
+            onClick={() => setPreviewOpen(true)}
+            className="rounded-lg border border-hai px-4 py-2.5 text-sm text-ginnezumi transition-colors hover:border-sumi hover:text-sumi lg:hidden"
+          >
+            {t("preview")}
+          </button>
+        )}
 
-          {/* Links section — linkhub only */}
-          {mode === "linkhub" && (
-            <LinksSection links={links} onChange={setLinks} />
-          )}
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={saving}
+          className="flex-1 rounded-lg bg-beni py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60"
+        >
+          {saving ? "..." : saveLabel ?? t("save")}
+        </button>
+      </div>
+    </div>
+  );
 
-          {/* Theme — linkhub only */}
-          {mode === "linkhub" && (
-            <>
-              <ThemeSection
-                theme={{ ...theme, buttonStyle }}
-                onChange={(t) => {
-                  const { buttonStyle: bs, ...rest } = t;
-                  setTheme(rest);
-                  if (bs) setButtonStyle(bs);
-                }}
-              />
-              <ButtonStylePicker
-                style={buttonStyle}
-                onChange={setButtonStyle}
-              />
-            </>
-          )}
-
-          {/* Actions */}
-          <div className="flex gap-3 border-t border-hai/30 pt-5">
-            {/* Mobile preview button */}
-            {mode === "linkhub" && (
-              <button
-                type="button"
-                onClick={() => setPreviewOpen(true)}
-                className="rounded-lg border border-hai px-4 py-2.5 text-sm text-ginnezumi transition-colors hover:border-sumi hover:text-sumi lg:hidden"
-              >
-                {t("preview")}
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={handleSave}
-              disabled={saving}
-              className="flex-1 rounded-lg bg-beni py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60"
-            >
-              {saving ? "..." : saveLabel ?? t("save")}
-            </button>
-          </div>
+  // Redirect mode: centered single-column layout
+  if (!isLinkhub) {
+    return (
+      <div className="flex flex-1 justify-center px-4 py-8 sm:px-6">
+        <div className="w-full max-w-lg">
+          {editorContent}
         </div>
+      </div>
+    );
+  }
+
+  // Linkhub mode: split layout with preview
+  return (
+    <div className="flex flex-1 flex-col lg:flex-row">
+      {/* Editor panel — left side */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:max-w-lg lg:border-r lg:border-hai/30">
+        {editorContent}
       </div>
 
       {/* Preview panel — right side, desktop only */}
-      {mode === "linkhub" && (
-        <div className="hidden flex-1 items-start justify-center bg-shironeri lg:flex">
-          <div className="sticky top-6 py-6">
-            <PreviewPanel data={landingData} />
-          </div>
+      <div className="hidden flex-1 items-start justify-center bg-shironeri lg:flex">
+        <div className="sticky top-6 py-6">
+          <PreviewPanel data={landingData} />
         </div>
-      )}
+      </div>
 
       {/* Preview modal — mobile only */}
-      {mode === "linkhub" && (
-        <PreviewModal
-          data={landingData}
-          open={previewOpen}
-          onClose={() => setPreviewOpen(false)}
-        />
-      )}
+      <PreviewModal
+        data={landingData}
+        open={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+      />
     </div>
   );
 }
