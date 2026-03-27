@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { markAccepted } from "./use-consent-flow";
 
 interface TermsConsentModalProps {
   open: boolean;
@@ -27,6 +28,7 @@ export function TermsConsentModal({ open, onClose, callbackUrl = "/dashboard" }:
   async function handleContinue() {
     if (!accepted) return;
     setLoading(true);
+    markAccepted();
     await signIn("google", { callbackUrl });
   }
 

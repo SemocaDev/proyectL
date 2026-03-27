@@ -1,27 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { TermsConsentModal } from "@/components/auth/terms-consent-modal";
+import { useConsentFlow } from "@/components/auth/use-consent-flow";
 
 export function AutoLoginModal() {
   const searchParams = useSearchParams();
-  const [open, setOpen] = useState(false);
-  const [callbackUrl, setCallbackUrl] = useState("/dashboard");
+  const { modalOpen, pendingCallbackUrl, openLogin, closeModal } = useConsentFlow();
 
   useEffect(() => {
     if (searchParams.get("login") === "1") {
       const cb = searchParams.get("callbackUrl") ?? "/dashboard";
-      setCallbackUrl(cb);
-      setOpen(true);
+      openLogin(cb);
     }
+  // openLogin is stable (defined outside render), searchParams changes are the trigger
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   return (
     <TermsConsentModal
-      open={open}
-      onClose={() => setOpen(false)}
-      callbackUrl={callbackUrl}
+      open={modalOpen}
+      onClose={closeModal}
+      callbackUrl={pendingCallbackUrl}
     />
   );
 }

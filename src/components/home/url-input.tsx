@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { TermsConsentModal } from "@/components/auth/terms-consent-modal";
+import { useConsentFlow } from "@/components/auth/use-consent-flow";
 
 interface UrlInputProps {
   placeholder: string;
@@ -15,10 +16,10 @@ interface UrlInputProps {
 export function UrlInput({ placeholder, cta }: UrlInputProps) {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  const [consentOpen, setConsentOpen] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
   const t = useTranslations("validation");
+  const { modalOpen, pendingCallbackUrl, openLogin, closeModal } = useConsentFlow();
 
   function isValidUrl(value: string) {
     try {
@@ -43,8 +44,7 @@ export function UrlInput({ placeholder, cta }: UrlInputProps) {
     }
 
     if (!session?.user) {
-      sessionStorage.setItem("pending_url", url);
-      setConsentOpen(true);
+      openLogin(`/create?url=${encodeURIComponent(url)}`);
       return;
     }
 
@@ -75,9 +75,9 @@ export function UrlInput({ placeholder, cta }: UrlInputProps) {
       </form>
 
       <TermsConsentModal
-        open={consentOpen}
-        onClose={() => setConsentOpen(false)}
-        callbackUrl={`/create?url=${encodeURIComponent(url)}`}
+        open={modalOpen}
+        onClose={closeModal}
+        callbackUrl={pendingCallbackUrl}
       />
     </>
   );
