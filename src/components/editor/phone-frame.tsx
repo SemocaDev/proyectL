@@ -6,19 +6,20 @@ interface PhoneFrameProps {
 
 export function PhoneFrame({ children }: PhoneFrameProps) {
   return (
-    <div className="mx-auto w-full max-w-[320px]">
+    // 390px wide — iPhone 14 Pro logical width, good reference for modern phones
+    <div className="mx-auto w-full max-w-97.5">
       {/* Phone bezel */}
-      <div className="rounded-[2rem] border-[6px] border-sumi/90 bg-sumi/90 p-1 shadow-xl sm:rounded-[2.5rem] sm:border-8">
-        {/* Notch */}
-        <div className="mx-auto mb-1 h-4 w-20 rounded-full bg-sumi/90 sm:h-5 sm:w-28" />
+      <div className="rounded-[2.75rem] border-8 border-sumi/85 bg-sumi/85 px-1 pb-1 pt-0 shadow-2xl">
+        {/* Dynamic Island style pill */}
+        <div className="mx-auto mb-1.5 mt-2 h-4.5 w-25 rounded-full bg-sumi/85" />
 
-        {/* Screen */}
-        <div className="h-130 overflow-y-auto overflow-x-hidden rounded-[1.5rem] bg-white sm:h-145 sm:rounded-[2rem]">
+        {/* Screen — 390×844 ratio ≈ aspect 9:19.5, we use a fixed height */}
+        <div className="h-160 overflow-y-auto overflow-x-hidden rounded-[2rem] bg-white">
           {children}
         </div>
 
         {/* Home indicator */}
-        <div className="mx-auto mt-1.5 h-1 w-20 rounded-full bg-white/30 sm:mt-2 sm:w-28" />
+        <div className="mx-auto mb-0.5 mt-2 h-1 w-28 rounded-full bg-white/25" />
       </div>
     </div>
   );

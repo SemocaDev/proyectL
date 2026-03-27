@@ -168,8 +168,8 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
       </div>
 
       {/* Preview panel — right side, desktop only */}
-      <div className="hidden flex-1 items-start justify-center bg-shironeri lg:flex">
-        <div className="sticky top-6 py-6">
+      <div className="hidden flex-1 items-start justify-center overflow-y-auto bg-shironeri/60 px-6 lg:flex">
+        <div className="sticky top-6 py-8">
           <PreviewPanel data={landingData} />
         </div>
       </div>
