@@ -61,34 +61,23 @@ export function TermsConsentModal({ open, onClose, callbackUrl = "/dashboard" }:
           </div>
 
           {/* Checkbox */}
-          <label className="flex cursor-pointer items-start gap-3">
+          <label className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-ginnezumi">
             <input
               type="checkbox"
               checked={accepted}
               onChange={(e) => setAccepted(e.target.checked)}
               className="mt-0.5 h-4 w-4 shrink-0 accent-beni"
             />
-            <span className="text-sm leading-relaxed text-ginnezumi">
-              {t.rich("consentCheck", {
-                terms: (chunks) => (
-                  <Link
-                    href="/legal/terms"
-                    target="_blank"
-                    className="text-beni underline underline-offset-2 hover:text-shu"
-                  >
-                    {chunks}
-                  </Link>
-                ),
-                privacy: (chunks) => (
-                  <Link
-                    href="/legal/privacy"
-                    target="_blank"
-                    className="text-beni underline underline-offset-2 hover:text-shu"
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              })}
+            <span>
+              {t("consentCheckPre") && <>{t("consentCheckPre")}{" "}</>}
+              <Link href="/legal/terms" target="_blank" className="text-beni underline underline-offset-2 hover:text-shu">
+                {t("terms")}
+              </Link>
+              {" "}{t("consentCheckMid")}{" "}
+              <Link href="/legal/privacy" target="_blank" className="text-beni underline underline-offset-2 hover:text-shu">
+                {t("privacy")}
+              </Link>
+              {t("consentCheckSuffix")}
             </span>
           </label>
 

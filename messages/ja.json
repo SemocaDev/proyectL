@@ -93,7 +93,9 @@
     "privacy": "プライバシーポリシー",
     "consentTitle": "続ける前に",
     "consentBody": "DevMinds Linksを使用するには、利用規約とプライバシーポリシーに同意する必要があります。",
-    "consentCheck": "{terms}と{privacy}を読み、同意します。",
+    "consentCheckPre": "",
+    "consentCheckMid": "と",
+    "consentCheckSuffix": "を読み、同意します。",
     "consentCta": "Googleで続ける",
     "consentCancel": "キャンセル"
   },

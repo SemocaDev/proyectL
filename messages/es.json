@@ -93,7 +93,9 @@
     "privacy": "Política de privacidad",
     "consentTitle": "Antes de continuar",
     "consentBody": "Para usar DevMinds Links debes aceptar nuestros términos de servicio y política de privacidad.",
-    "consentCheck": "He leído y acepto los {terms} y la {privacy}.",
+    "consentCheckPre": "He leído y acepto los",
+    "consentCheckMid": "y la",
+    "consentCheckSuffix": ".",
     "consentCta": "Continuar con Google",
     "consentCancel": "Cancelar"
   },
