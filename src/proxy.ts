@@ -60,12 +60,15 @@ export function proxy(request: NextRequest) {
   if (APP_ROUTES.has(firstSegment)) {
     // 2a. Protected routes → verify session cookie (optimistic check)
     const isProtected =
-      firstSegment === "dashboard" || firstSegment === "admin";
+      firstSegment === "dashboard" ||
+      firstSegment === "admin" ||
+      firstSegment === "create";
 
     if (isProtected && !hasSession(request)) {
       const url = request.nextUrl.clone();
+      const callbackUrl = request.nextUrl.pathname + request.nextUrl.search;
       url.pathname = "/";
-      url.search = "";
+      url.search = `?login=1&callbackUrl=${encodeURIComponent(callbackUrl)}`;
       return NextResponse.redirect(url);
     }
 

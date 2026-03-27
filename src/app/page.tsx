@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { WagaraPattern } from "@/components/patterns";
 import { UrlInput } from "@/components/home/url-input";
+import { AutoLoginModal } from "@/components/home/auto-login-modal";
 import { getTranslations } from "next-intl/server";
 import { colors } from "@/lib/css-vars";
 
@@ -65,6 +67,10 @@ export default async function HomePage() {
       </main>
 
       <Footer />
+
+      <Suspense>
+        <AutoLoginModal />
+      </Suspense>
     </div>
   );
 }
