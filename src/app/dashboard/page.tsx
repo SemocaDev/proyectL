@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { getUserLinks } from "@/actions/link-actions";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { WagaraPattern } from "@/components/wagara-pattern";
+import { WagaraPattern } from "@/components/patterns";
 import { LinkCard } from "@/components/dashboard/link-card";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -13,19 +13,22 @@ export default async function DashboardPage() {
   const { links = [] } = await getUserLinks().then((r) => r ?? { links: [] });
 
   const totalClicks = links.reduce((sum, l) => sum + (l.clickCount ?? 0), 0);
+  const activeLinks = links.filter((l) => l.status === "active").length;
 
   return (
     <div className="flex min-h-screen flex-col bg-shironeri">
       <Navbar />
 
       <main className="relative flex-1 px-4 py-12">
-        <WagaraPattern pattern="asanoha" opacity={0.02} />
+        {/* Patrón asanoha en el background del dashboard */}
+        <WagaraPattern pattern="asanoha" color="#B94047" opacity={0.05} />
 
         <div className="relative z-10 mx-auto max-w-5xl space-y-10">
+
           {/* Header */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div className="space-y-1">
-              <p className="text-xs font-medium uppercase tracking-wider text-ginnezumi">
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-medium uppercase tracking-widest text-ginnezumi/60">
                 {t("welcome")}
               </p>
               <h1 className="text-2xl font-light text-sumi sm:text-3xl">
@@ -34,37 +37,54 @@ export default async function DashboardPage() {
             </div>
             <Link
               href="/create"
-              className="inline-flex w-full items-center justify-center rounded-lg bg-beni px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-beni px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-beni/90 hover:shadow-md active:scale-[0.98] sm:w-auto"
             >
-              + {t("createNew")}
+              <span className="text-base leading-none">+</span>
+              {t("createNew")}
             </Link>
           </div>
 
-          {/* Stats rápidas */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-            <StatCard label={t("totalLinks")} value={String(links.length)} />
-            <StatCard label={t("totalClicks")} value={String(totalClicks)} />
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4">
+            <StatCard
+              label={t("totalLinks")}
+              value={String(links.length)}
+              pattern="kikko"
+            />
+            <StatCard
+              label={t("totalClicks")}
+              value={String(totalClicks)}
+              pattern="shippo"
+            />
             <StatCard
               label={t("activeLinks")}
-              value={String(links.filter((l) => l.status === "active").length)}
+              value={String(activeLinks)}
+              pattern="asanoha"
             />
           </div>
 
           {/* Lista de links */}
           <div className="space-y-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-ginnezumi">
-              {t("recentLinks")}
-            </h2>
+            <div className="flex items-center gap-3">
+              <span className="h-px flex-1 bg-hai/60" />
+              <h2 className="text-[11px] font-medium uppercase tracking-widest text-ginnezumi/60">
+                {t("recentLinks")}
+              </h2>
+              <span className="h-px flex-1 bg-hai/60" />
+            </div>
 
             {links.length === 0 ? (
-              <div className="rounded-lg border border-dashed border-hai bg-white py-16 text-center">
-                <p className="text-sm text-ginnezumi">{t("noLinks")}</p>
-                <Link
-                  href="/create"
-                  className="mt-4 inline-block text-sm font-medium text-beni hover:underline"
-                >
-                  {t("createFirst")}
-                </Link>
+              <div className="relative overflow-hidden rounded-2xl border border-dashed border-hai bg-white py-20 text-center">
+                <WagaraPattern pattern="ichimatsu" color="#4B5563" opacity={0.03} static />
+                <div className="relative z-10 space-y-3">
+                  <p className="text-sm text-ginnezumi">{t("noLinks")}</p>
+                  <Link
+                    href="/create"
+                    className="inline-block text-sm font-medium text-beni transition-colors hover:text-beni/70"
+                  >
+                    {t("createFirst")} →
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="space-y-3">
@@ -82,11 +102,24 @@ export default async function DashboardPage() {
   );
 }
 
-function StatCard({ label, value }: { label: string; value: string }) {
+function StatCard({
+  label,
+  value,
+  pattern,
+}: {
+  label: string;
+  value: string;
+  pattern: "kikko" | "shippo" | "asanoha";
+}) {
   return (
-    <div className="rounded-lg border border-hai bg-white px-5 py-4 shadow-sm">
-      <p className="text-xs text-ginnezumi">{label}</p>
-      <p className="mt-1 text-2xl font-light text-sumi">{value}</p>
+    <div className="relative overflow-hidden rounded-2xl border border-hai/60 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
+      <WagaraPattern pattern={pattern} color="#B94047" opacity={0.04} static />
+      <div className="relative z-10">
+        <p className="text-[10px] font-medium uppercase tracking-wider text-ginnezumi/60 sm:text-xs">
+          {label}
+        </p>
+        <p className="mt-1.5 text-xl font-light text-sumi sm:text-2xl">{value}</p>
+      </div>
     </div>
   );
 }

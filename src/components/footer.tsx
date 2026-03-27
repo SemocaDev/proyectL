@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Separator } from "@/components/ui/separator";
+import { WagaraPattern } from "@/components/patterns";
 import { DevMindsCredit } from "./devminds-credit";
 
 export function Footer() {
@@ -9,14 +9,27 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-hai/50">
-      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
-        <Separator className="mb-6 bg-hai/30" />
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm text-ginnezumi">
-            {t("rights")} &middot; {currentYear}
+    <footer className="relative mt-auto border-t border-hai/50 bg-shironeri overflow-hidden">
+      {/* Patrón tokusa sutil en el footer */}
+      <WagaraPattern pattern="tokusa" color="#4B5563" opacity={0.045} static />
+
+      <div className="relative z-10 mx-auto max-w-5xl px-4 py-7 md:px-6">
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+          {/* Logo + tagline */}
+          <div className="flex items-center gap-2.5">
+            <span className="block h-3.5 w-px bg-beni/60" />
+            <span className="font-credit text-xs font-semibold tracking-tight text-sumi/70">
+              DevMinds Links
+            </span>
+          </div>
+
+          {/* Center: rights */}
+          <p className="text-[11px] text-ginnezumi/50">
+            © {currentYear} · {t("rights")}
           </p>
-          <p className="text-sm text-ginnezumi">
+
+          {/* Dev credit */}
+          <p className="text-[11px] text-ginnezumi/50">
             {t("devBy")} <DevMindsCredit />
           </p>
         </div>

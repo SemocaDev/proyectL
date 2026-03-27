@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/navbar";
-import { WagaraPattern } from "@/components/wagara-pattern";
+import { WagaraPattern } from "@/components/patterns";
 import Link from "next/link";
 
 export default async function NotFound() {
@@ -11,23 +11,47 @@ export default async function NotFound() {
       <Navbar />
 
       <main className="relative flex flex-1 flex-col items-center justify-center px-4">
-        <WagaraPattern pattern="ryusuimon" opacity={0.02} />
+        {/* Patrón uroko — escamas de protección */}
+        <WagaraPattern pattern="uroko" color="#B94047" opacity={0.06} />
 
-        <div className="relative z-10 text-center space-y-6">
-          <p className="text-7xl font-light text-beni/20 sm:text-9xl">404</p>
-          <div className="space-y-2">
-            <h1 className="text-2xl font-light text-sumi sm:text-3xl">
-              {t("title")}
-            </h1>
-            <p className="text-sm text-ginnezumi max-w-sm mx-auto">
-              {t("description")}
+        {/* Gradiente radial para difuminar */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 60% 50% at 50% 50%, transparent 20%, #F9F7F2 85%)",
+          }}
+        />
+
+        <div className="relative z-10 text-center space-y-8">
+          {/* 404 grande con opacidad beni */}
+          <div className="relative">
+            <p className="select-none text-[8rem] font-light leading-none text-beni/15 sm:text-[12rem] lg:text-[16rem]">
+              404
             </p>
+            {/* Línea decorativa superpuesta */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="space-y-3 text-center">
+                <div className="flex items-center justify-center gap-3">
+                  <span className="h-px w-8 bg-beni/40" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-beni" />
+                  <span className="h-px w-8 bg-beni/40" />
+                </div>
+                <h1 className="text-xl font-light text-sumi sm:text-2xl">
+                  {t("title")}
+                </h1>
+                <p className="text-sm text-ginnezumi max-w-xs mx-auto">
+                  {t("description")}
+                </p>
+              </div>
+            </div>
           </div>
+
           <Link
             href="/"
-            className="inline-block rounded-lg bg-beni px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90"
+            className="inline-flex items-center gap-2 rounded-xl bg-beni px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-beni/90 hover:shadow-md active:scale-[0.98]"
           >
-            {t("backHome")}
+            ← {t("backHome")}
           </Link>
         </div>
       </main>

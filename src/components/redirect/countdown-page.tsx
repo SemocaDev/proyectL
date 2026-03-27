@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { WagaraPattern } from "@/components/wagara-pattern";
+import { WagaraPattern } from "@/components/patterns";
 
 interface CountdownPageProps {
   title: string | null;
@@ -43,7 +43,7 @@ export function CountdownPage({
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-shironeri px-4 py-12">
-      <WagaraPattern pattern="seigaiha" opacity={0.02} />
+      <WagaraPattern pattern="seigaiha" color="#B94047" opacity={0.06} />
 
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6">
         {/* Countdown circle */}
