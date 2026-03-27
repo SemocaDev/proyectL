@@ -90,7 +90,12 @@
   },
   "legal": {
     "terms": "Términos de servicio",
-    "privacy": "Política de privacidad"
+    "privacy": "Política de privacidad",
+    "consentTitle": "Antes de continuar",
+    "consentBody": "Para usar DevMinds Links debes aceptar nuestros términos de servicio y política de privacidad.",
+    "consentCheck": "He leído y acepto los {terms} y la {privacy}.",
+    "consentCta": "Continuar con Google",
+    "consentCancel": "Cancelar"
   },
   "common": {
     "loading": "Cargando...",
