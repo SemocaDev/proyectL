@@ -161,17 +161,15 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
 
   // Linkhub mode: split layout with preview
   return (
-    <div className="flex flex-1 flex-col lg:flex-row">
-      {/* Editor panel — left side */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 lg:max-w-lg lg:border-r lg:border-hai/30">
+    <div className="flex flex-1 flex-col lg:flex-row lg:overflow-hidden">
+      {/* Editor panel — left, 42%, independent scroll */}
+      <div className="w-full overflow-y-auto px-4 py-6 sm:px-6 lg:w-[42%] lg:border-r lg:border-hai/30 lg:py-8">
         {editorContent}
       </div>
 
-      {/* Preview panel — right side, desktop only */}
-      <div className="hidden flex-1 items-start justify-center overflow-y-auto bg-shironeri/60 px-6 lg:flex">
-        <div className="sticky top-6 py-8">
-          <PreviewPanel data={landingData} />
-        </div>
+      {/* Preview panel — right 58%, independent scroll, desktop only */}
+      <div className="hidden overflow-y-auto bg-hai/20 lg:flex lg:w-[58%] lg:items-start lg:justify-center lg:px-8 lg:py-8">
+        <PreviewPanel data={landingData} />
       </div>
 
       {/* Preview modal — mobile only */}
