@@ -42,32 +42,37 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
           {/* Backdrop */}
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
 
-          {/* Dropdown */}
-          <div className="absolute left-0 top-full z-50 mt-1 grid w-64 grid-cols-6 gap-1 rounded-lg border border-hai bg-white p-2 shadow-lg">
-            {/* Clear option */}
-            <button
-              type="button"
-              onClick={() => { onChange(undefined); setOpen(false); }}
-              className="flex h-9 w-9 items-center justify-center rounded-md border border-dashed border-hai text-[10px] text-ginnezumi hover:bg-shironeri"
-              title={t("noIcon")}
-            >
-              ✕
-            </button>
-            {entries.map(([key, { svg: Icon, label }]) => (
+          {/* Dropdown — fixed bottom sheet on mobile, absolute on desktop */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl border-t border-hai bg-white p-3 shadow-2xl sm:absolute sm:bottom-auto sm:left-0 sm:right-auto sm:top-full sm:mt-1 sm:w-64 sm:rounded-lg sm:border sm:shadow-lg">
+            {/* Mobile handle */}
+            <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-hai sm:hidden" />
+
+            <div className="grid grid-cols-6 gap-1 sm:grid-cols-6">
+              {/* Clear option */}
               <button
-                key={key}
                 type="button"
-                onClick={() => { onChange(key); setOpen(false); }}
-                className={`flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-                  value === key
-                    ? "bg-beni/10 text-beni"
-                    : "text-ginnezumi hover:bg-shironeri hover:text-sumi"
-                }`}
-                title={label}
+                onClick={() => { onChange(undefined); setOpen(false); }}
+                className="flex h-10 w-10 items-center justify-center rounded-md border border-dashed border-hai text-[10px] text-ginnezumi hover:bg-shironeri sm:h-9 sm:w-9"
+                title={t("noIcon")}
               >
-                <Icon className="h-4 w-4" />
+                ✕
               </button>
-            ))}
+              {entries.map(([key, { svg: Icon, label }]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => { onChange(key); setOpen(false); }}
+                  className={`flex h-10 w-10 items-center justify-center rounded-md transition-colors sm:h-9 sm:w-9 ${
+                    value === key
+                      ? "bg-beni/10 text-beni"
+                      : "text-ginnezumi hover:bg-shironeri hover:text-sumi"
+                  }`}
+                  title={label}
+                >
+                  <Icon className="h-4 w-4" />
+                </button>
+              ))}
+            </div>
           </div>
         </>
       )}

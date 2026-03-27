@@ -132,9 +132,19 @@
     "preview": "Vista previa",
     "closePreview": "Cerrar",
     "save": "Guardar cambios",
+    "optional": "opcional",
     "saving": "Guardando...",
     "saved": "¡Cambios guardados!",
     "saveFailed": "No se pudieron guardar los cambios."
+  },
+  "countdown": {
+    "by": "por",
+    "goNow": "Ir ahora →",
+    "redirectingTo": "Serás redirigido a"
+  },
+  "linkhub": {
+    "settingUp": "Esta página está siendo configurada.",
+    "noLinksPreview": "Agrega links para ver el preview"
   },
   "footer": {
     "rights": "Todos los derechos reservados",

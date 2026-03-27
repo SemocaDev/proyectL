@@ -32,26 +32,34 @@ export function BasicInfo({
       {/* Target URL — solo redirect */}
       {mode === "redirect" && (
         <div className="space-y-1.5">
-          <label className="text-xs text-ginnezumi">{t("targetUrl")}</label>
+          <label className="block text-xs font-medium text-ginnezumi">
+            {t("targetUrl")}
+          </label>
           <input
             type="url"
             value={targetUrl}
             onChange={(e) => onTargetUrlChange(e.target.value)}
-            className="w-full rounded-lg border border-hai bg-white px-3 py-2.5 text-sm text-sumi focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
+            className="w-full rounded-xl border border-hai bg-white px-4 py-3 text-sm text-sumi placeholder-ginnezumi/40 focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
             placeholder="https://..."
+            autoFocus
           />
         </div>
       )}
 
       {/* Título */}
       <div className="space-y-1.5">
-        <label className="text-xs text-ginnezumi">{t("title")}</label>
+        <label className="block text-xs font-medium text-ginnezumi">
+          {t("title")}
+          {mode === "redirect" && (
+            <span className="ml-1 font-normal text-ginnezumi/50">({t("optional")})</span>
+          )}
+        </label>
         <input
           type="text"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           maxLength={100}
-          className="w-full rounded-lg border border-hai bg-white px-3 py-2.5 text-sm text-sumi focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
+          className="w-full rounded-xl border border-hai bg-white px-4 py-3 text-sm text-sumi placeholder-ginnezumi/40 focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
           placeholder={t("titlePlaceholder")}
         />
       </div>
@@ -59,18 +67,18 @@ export function BasicInfo({
       {/* Bio — solo linkhub */}
       {mode === "linkhub" && (
         <div className="space-y-1.5">
-          <label className="text-xs text-ginnezumi">{t("bio")}</label>
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-medium text-ginnezumi">{t("bio")}</label>
+            <span className="text-[11px] text-ginnezumi/40">{bio.length}/300</span>
+          </div>
           <textarea
             value={bio}
             onChange={(e) => onBioChange(e.target.value)}
             maxLength={300}
             rows={3}
-            className="w-full resize-none rounded-lg border border-hai bg-white px-3 py-2.5 text-sm text-sumi focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
+            className="w-full resize-none rounded-xl border border-hai bg-white px-4 py-3 text-sm text-sumi placeholder-ginnezumi/40 focus:border-beni focus:outline-none focus:ring-1 focus:ring-beni"
             placeholder={t("bioPlaceholder")}
           />
-          <p className="text-right text-[11px] text-ginnezumi/50">
-            {bio.length}/300
-          </p>
         </div>
       )}
     </section>

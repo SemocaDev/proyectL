@@ -26,7 +26,8 @@ export function LinkItemRow({
   const t = useTranslations("editor");
 
   return (
-    <div className="group rounded-lg border border-hai bg-white p-3 transition-colors hover:border-sumi/20">
+    <div className="rounded-lg border border-hai bg-white p-3 transition-colors hover:border-sumi/20">
+      {/* Top row: icon + fields */}
       <div className="flex items-start gap-2">
         {/* Icon picker */}
         <IconPicker
@@ -52,42 +53,47 @@ export function LinkItemRow({
             placeholder="https://..."
           />
         </div>
+      </div>
 
-        {/* Actions */}
-        <div className="flex flex-col gap-0.5">
+      {/* Bottom row: reorder + delete */}
+      <div className="mt-2 flex items-center justify-between border-t border-hai/30 pt-2">
+        <div className="flex gap-1">
           <button
             type="button"
             onClick={onMoveUp}
             disabled={index === 0}
-            className="rounded p-1 text-ginnezumi/40 transition-colors hover:text-sumi disabled:opacity-20"
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-ginnezumi/60 transition-colors hover:bg-shironeri hover:text-sumi disabled:opacity-30"
             title={t("moveUp")}
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
             </svg>
+            <span className="hidden sm:inline">{t("moveUp")}</span>
           </button>
           <button
             type="button"
             onClick={onMoveDown}
             disabled={index === total - 1}
-            className="rounded p-1 text-ginnezumi/40 transition-colors hover:text-sumi disabled:opacity-20"
+            className="flex items-center gap-1 rounded px-2 py-1 text-xs text-ginnezumi/60 transition-colors hover:bg-shironeri hover:text-sumi disabled:opacity-30"
             title={t("moveDown")}
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
-          </button>
-          <button
-            type="button"
-            onClick={onRemove}
-            className="rounded p-1 text-ginnezumi/30 transition-colors hover:text-shu"
-            title={t("removeLink")}
-          >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+            <span className="hidden sm:inline">{t("moveDown")}</span>
           </button>
         </div>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="flex items-center gap-1 rounded px-2 py-1 text-xs text-ginnezumi/40 transition-colors hover:bg-shu/5 hover:text-shu"
+          title={t("removeLink")}
+        >
+          <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+          </svg>
+          <span>{t("removeLink")}</span>
+        </button>
       </div>
     </div>
   );

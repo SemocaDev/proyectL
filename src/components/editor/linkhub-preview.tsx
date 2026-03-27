@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { PLATFORM_ICONS } from "@/lib/platform-icons";
 import type { LandingData, ButtonStyle } from "@/lib/schemas";
 
@@ -48,6 +49,7 @@ function getSubTextColor(bgTheme?: string): string {
 }
 
 export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
+  const t = useTranslations("linkhub");
   const accent = data.theme?.accentColor ?? "#B94047";
   const bgTheme = data.theme?.bgTheme ?? "light";
   const displayTitle = data.title;
@@ -57,19 +59,21 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
 
   const wrapperClass = embedded
     ? `relative min-h-screen ${BG_THEMES[bgTheme]}`
-    : `relative h-full ${BG_THEMES[bgTheme]}`;
+    : `relative h-full min-h-full ${BG_THEMES[bgTheme]}`;
+
+  const isFilled = data.theme?.buttonStyle?.variant !== "outline";
 
   return (
     <div className={wrapperClass}>
-      <div className="mx-auto max-w-md px-4 py-10 sm:py-14">
+      <div className={`mx-auto max-w-md px-4 ${embedded ? "py-12 sm:py-16" : "py-8"}`}>
         {/* Profile header */}
-        <div className="mb-8 text-center space-y-3">
+        <div className="mb-6 text-center space-y-2.5">
           <div
-            className="mx-auto h-px w-12"
+            className="mx-auto h-px w-10"
             style={{ backgroundColor: accent }}
           />
           {displayTitle && (
-            <h1 className={`text-xl font-light sm:text-2xl ${textColor}`}>
+            <h1 className={`font-light ${embedded ? "text-xl sm:text-2xl" : "text-lg"} ${textColor}`}>
               {displayTitle}
             </h1>
           )}
@@ -82,7 +86,7 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
 
         {/* Link buttons */}
         {data.links && data.links.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             {data.links.map((item, i) => {
               const IconComp = item.icon ? PLATFORM_ICONS[item.icon]?.svg : null;
               return (
@@ -92,44 +96,49 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
                   target={embedded ? "_blank" : undefined}
                   rel={embedded ? "noopener noreferrer" : undefined}
                   onClick={embedded ? undefined : (e) => e.preventDefault()}
-                  className={`flex w-full items-center gap-3 px-5 py-3.5 text-sm font-medium transition-all active:scale-[0.98] ${btnClasses} ${textColor}`}
-                  style={
-                    data.theme?.buttonStyle?.variant !== "outline"
-                      ? { borderLeftColor: accent, borderLeftWidth: "3px" }
-                      : undefined
-                  }
+                  className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-all active:scale-[0.98] ${btnClasses} ${textColor}`}
+                  style={isFilled ? { borderLeftColor: accent, borderLeftWidth: "3px" } : undefined}
                 >
                   {IconComp && (
                     <IconComp className="h-4 w-4 shrink-0 opacity-60" />
                   )}
-                  <span className="flex-1 text-center">{item.label}</span>
+                  <span className="flex-1 text-center">{item.label || "—"}</span>
                 </a>
               );
             })}
           </div>
         ) : (
           <div
-            className={`rounded-lg border border-dashed py-12 text-center ${
+            className={`rounded-lg border border-dashed py-10 text-center ${
               bgTheme === "dark"
                 ? "border-white/20 bg-white/5"
                 : "border-hai bg-white/60"
             }`}
           >
             <p className={`text-sm ${subTextColor}`}>
-              Agrega links para ver el preview
+              {embedded ? t("settingUp") : t("noLinksPreview")}
             </p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="mt-10 text-center">
-          <span
-            className={`text-[11px] ${
-              bgTheme === "dark" ? "text-white/20" : "text-ginnezumi/30"
-            }`}
-          >
-            Powered by DevMinds Links
-          </span>
+        <div className="mt-8 text-center">
+          {embedded ? (
+            <a
+              href="https://l.devminds.online"
+              className={`text-[11px] transition-colors ${
+                bgTheme === "dark"
+                  ? "text-white/20 hover:text-white/40"
+                  : "text-ginnezumi/30 hover:text-ginnezumi/60"
+              }`}
+            >
+              Powered by DevMinds Links
+            </a>
+          ) : (
+            <span className={`text-[10px] ${bgTheme === "dark" ? "text-white/15" : "text-ginnezumi/25"}`}>
+              Powered by DevMinds Links
+            </span>
+          )}
         </div>
       </div>
     </div>

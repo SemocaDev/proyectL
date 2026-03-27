@@ -132,9 +132,19 @@
     "preview": "Preview",
     "closePreview": "Close",
     "save": "Save changes",
+    "optional": "optional",
     "saving": "Saving...",
     "saved": "Changes saved!",
     "saveFailed": "Could not save changes."
+  },
+  "countdown": {
+    "by": "by",
+    "goNow": "Go now →",
+    "redirectingTo": "You'll be redirected to"
+  },
+  "linkhub": {
+    "settingUp": "This page is being set up.",
+    "noLinksPreview": "Add links to see the preview"
   },
   "footer": {
     "rights": "All rights reserved",
