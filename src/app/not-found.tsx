@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Navbar } from "@/components/navbar";
 import { WagaraPattern } from "@/components/patterns";
+import { colors } from "@/lib/css-vars";
 import Link from "next/link";
 
 export default async function NotFound() {
@@ -12,14 +13,13 @@ export default async function NotFound() {
 
       <main className="relative flex flex-1 flex-col items-center justify-center px-4">
         {/* Patrón uroko — escamas de protección */}
-        <WagaraPattern pattern="uroko" color="#B94047" opacity={0.06} />
+        <WagaraPattern pattern="uroko" color={colors.beni} opacity={0.06} />
 
         {/* Gradiente radial para difuminar */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse 60% 50% at 50% 50%, transparent 20%, #F9F7F2 85%)",
+            background: `radial-gradient(ellipse 60% 50% at 50% 50%, transparent 20%, ${colors.shironeri} 85%)`,
           }}
         />
 

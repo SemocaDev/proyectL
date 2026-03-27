@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { WagaraPattern } from "@/components/patterns";
 import { LinkEditor, type LinkEditorData } from "@/components/editor/link-editor";
+import { colors } from "@/lib/css-vars";
 
 type Step = 1 | 2 | 3;
 type Mode = "redirect" | "linkhub";
@@ -104,7 +105,7 @@ function CreateWizard() {
       {/* Paso 1 y 3 — centrados */}
       {step !== 2 && (
         <main className="relative flex flex-1 flex-col items-center justify-center px-4 py-16">
-          <WagaraPattern pattern="asanoha" color="#B94047" opacity={0.06} />
+          <WagaraPattern pattern="asanoha" color={colors.beni} opacity={0.06} />
 
           <div className="relative z-10 w-full max-w-lg">
             {/* Progress dots */}

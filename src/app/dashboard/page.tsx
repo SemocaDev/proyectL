@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { WagaraPattern } from "@/components/patterns";
 import { LinkCard } from "@/components/dashboard/link-card";
 import { getTranslations } from "next-intl/server";
+import { colors } from "@/lib/css-vars";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -21,7 +22,7 @@ export default async function DashboardPage() {
 
       <main className="relative flex-1 px-4 py-12">
         {/* Patrón asanoha en el background del dashboard */}
-        <WagaraPattern pattern="asanoha" color="#B94047" opacity={0.05} />
+        <WagaraPattern pattern="asanoha" color={colors.beni} opacity={0.05} />
 
         <div className="relative z-10 mx-auto max-w-5xl space-y-10">
 
@@ -75,7 +76,7 @@ export default async function DashboardPage() {
 
             {links.length === 0 ? (
               <div className="relative overflow-hidden rounded-2xl border border-dashed border-hai bg-white py-20 text-center">
-                <WagaraPattern pattern="ichimatsu" color="#4B5563" opacity={0.03} static />
+                <WagaraPattern pattern="ichimatsu" color={colors.ginnezumi} opacity={0.03} static />
                 <div className="relative z-10 space-y-3">
                   <p className="text-sm text-ginnezumi">{t("noLinks")}</p>
                   <Link
@@ -113,7 +114,7 @@ function StatCard({
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-hai/60 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
-      <WagaraPattern pattern={pattern} color="#B94047" opacity={0.04} static />
+      <WagaraPattern pattern={pattern} color={colors.beni} opacity={0.04} static />
       <div className="relative z-10">
         <p className="text-[10px] font-medium uppercase tracking-wider text-ginnezumi/60 sm:text-xs">
           {label}

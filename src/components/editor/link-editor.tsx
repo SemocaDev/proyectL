@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { BasicInfo } from "./sections/basic-info";
-import { LinksSection } from "./sections/links-section";
-import { ThemeSection } from "./sections/theme-section";
-import { ButtonStylePicker } from "./sections/button-style-picker";
 import { RedirectOptions } from "./sections/redirect-options";
+import { EditorTabPanel } from "./editor-tab-panel";
+import { MobilePreviewView } from "./mobile-preview-view";
+import { MobileTabBar } from "./mobile-tab-bar";
 import { PreviewPanel } from "./preview-panel";
-import { PreviewModal } from "./preview-modal";
+import type { EditorTab } from "./editor-tab-panel";
 import type {
   LandingData,
   LinkhubLinkItem,
@@ -33,11 +33,17 @@ interface LinkEditorProps {
 
 export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps) {
   const t = useTranslations("editor");
+  const isLinkhub = mode === "linkhub";
 
-  // State
+  // ── Shared state ──────────────────────────────────────────────────────────
   const [targetUrl, setTargetUrl] = useState(initial?.targetUrl ?? "");
   const [title, setTitle] = useState(initial?.title ?? initial?.landingData?.title ?? "");
+  const [redirectDelay, setRedirectDelay] = useState(initial?.redirectDelay ?? 0);
+  const [saving, setSaving] = useState(false);
+
+  // ── Linkhub-only state ────────────────────────────────────────────────────
   const [bio, setBio] = useState(initial?.landingData?.bio ?? "");
+  const [avatar, setAvatar] = useState<string | undefined>(initial?.landingData?.avatar);
   const [links, setLinks] = useState<LinkhubLinkItem[]>(
     initial?.landingData?.links ?? []
   );
@@ -47,19 +53,28 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
   const [buttonStyle, setButtonStyle] = useState<ButtonStyle>(
     initial?.landingData?.theme?.buttonStyle ?? { shape: "rounded", variant: "filled" }
   );
-  const [redirectDelay, setRedirectDelay] = useState(initial?.redirectDelay ?? 0);
-  const [saving, setSaving] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
-  // Computed landing data for preview
+  // ── Mobile navigation state ───────────────────────────────────────────────
+  const [mobileView, setMobileView] = useState<"editor" | "preview">("editor");
+  const [activeTab, setActiveTab] = useState<EditorTab>("profile");
+
+  // ── Computed landing data (live preview) ──────────────────────────────────
   const landingData: LandingData = {
     title,
-    bio: mode === "linkhub" ? bio : undefined,
-    links: mode === "linkhub" ? links : undefined,
-    theme:
-      mode === "linkhub"
-        ? { ...theme, buttonStyle }
-        : undefined,
+    bio: isLinkhub ? bio : undefined,
+    avatar: isLinkhub ? avatar : undefined,
+    links: isLinkhub ? links : undefined,
+    theme: isLinkhub
+      ? {
+          accentColor: theme.accentColor,
+          bgTheme: theme.bgTheme,
+          bgColor: theme.bgColor,
+          bgPattern: theme.bgPattern,
+          patternOpacity: theme.patternOpacity,
+          buttonStyle,
+          buttonBorderColor: theme.buttonBorderColor,
+        }
+      : undefined,
   };
 
   async function handleSave() {
@@ -77,107 +92,109 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
     }
   }
 
-  const isLinkhub = mode === "linkhub";
+  function handleThemeChange(t: Theme) {
+    const { buttonStyle: bs, ...rest } = t;
+    setTheme(rest);
+    if (bs) setButtonStyle(bs);
+  }
 
-  const editorContent = (
-    <div className="space-y-6">
-      {/* Basic info */}
-      <BasicInfo
-        mode={mode}
-        title={title}
-        bio={bio}
-        targetUrl={targetUrl}
-        onTitleChange={setTitle}
-        onBioChange={setBio}
-        onTargetUrlChange={setTargetUrl}
-      />
-
-      {/* Redirect options */}
-      {mode === "redirect" && (
-        <RedirectOptions
-          delay={redirectDelay}
-          onDelayChange={setRedirectDelay}
-        />
-      )}
-
-      {/* Links section — linkhub only */}
-      {isLinkhub && (
-        <LinksSection links={links} onChange={setLinks} />
-      )}
-
-      {/* Theme — linkhub only */}
-      {isLinkhub && (
-        <>
-          <ThemeSection
-            theme={{ ...theme, buttonStyle }}
-            onChange={(t) => {
-              const { buttonStyle: bs, ...rest } = t;
-              setTheme(rest);
-              if (bs) setButtonStyle(bs);
-            }}
-          />
-          <ButtonStylePicker
-            style={buttonStyle}
-            onChange={setButtonStyle}
-          />
-        </>
-      )}
-
-      {/* Actions */}
-      <div className="flex gap-3 border-t border-hai/30 pt-5">
-        {/* Mobile preview button */}
-        {isLinkhub && (
-          <button
-            type="button"
-            onClick={() => setPreviewOpen(true)}
-            className="rounded-lg border border-hai px-4 py-2.5 text-sm text-ginnezumi transition-colors hover:border-sumi hover:text-sumi lg:hidden"
-          >
-            {t("preview")}
-          </button>
-        )}
-
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="flex-1 rounded-lg bg-beni py-2.5 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60"
-        >
-          {saving ? "..." : saveLabel ?? t("save")}
-        </button>
-      </div>
-    </div>
+  const saveBtn = (
+    <button
+      type="button"
+      onClick={handleSave}
+      disabled={saving}
+      className="w-full rounded-xl bg-beni py-3 text-sm font-medium text-white transition-colors hover:bg-beni/90 disabled:opacity-60"
+    >
+      {saving ? t("saving") : saveLabel ?? t("save")}
+    </button>
   );
 
-  // Redirect mode: centered single-column layout
+  // ── Redirect mode: single centered column ─────────────────────────────────
   if (!isLinkhub) {
     return (
       <div className="flex flex-1 justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-lg">
-          {editorContent}
+        <div className="w-full max-w-lg space-y-6">
+          <BasicInfo
+            mode={mode}
+            title={title}
+            bio=""
+            targetUrl={targetUrl}
+            onTitleChange={setTitle}
+            onBioChange={() => {}}
+            onTargetUrlChange={setTargetUrl}
+          />
+          <RedirectOptions delay={redirectDelay} onDelayChange={setRedirectDelay} />
+          <div className="border-t border-hai/30 pt-5">{saveBtn}</div>
         </div>
       </div>
     );
   }
 
-  // Linkhub mode: split layout with preview
+  // ── Linkhub mode: tab-based layout ───────────────────────────────────────
+  const tabPanelProps = {
+    activeTab,
+    onTabChange: setActiveTab,
+    title,
+    bio,
+    avatar,
+    links,
+    theme: { ...theme, buttonStyle },
+    onTitleChange: setTitle,
+    onBioChange: setBio,
+    onAvatarChange: setAvatar,
+    onLinksChange: setLinks,
+    onThemeChange: handleThemeChange,
+  };
+
   return (
     <div className="flex flex-1 flex-col lg:flex-row lg:overflow-hidden">
-      {/* Editor panel — left, 42%, independent scroll */}
-      <div className="w-full overflow-y-auto px-4 py-6 sm:px-6 lg:w-[42%] lg:border-r lg:border-hai/30 lg:py-8">
-        {editorContent}
+
+      {/* ── MOBILE: editor view ── */}
+      <div className={`flex flex-1 flex-col lg:hidden ${mobileView === "preview" ? "hidden" : ""}`}>
+        <div className="flex-1 overflow-y-auto" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom)))" }}>
+          <EditorTabPanel {...tabPanelProps} />
+          <div className="px-4 pb-4 pt-2">
+            {saveBtn}
+          </div>
+        </div>
       </div>
 
-      {/* Preview panel — right 58%, independent scroll, desktop only */}
-      <div className="hidden overflow-y-auto bg-hai/20 lg:flex lg:w-[58%] lg:items-start lg:justify-center lg:px-8 lg:py-8">
+      {/* ── MOBILE: preview view ── */}
+      {mobileView === "preview" && (
+        <div className="flex flex-1 flex-col lg:hidden" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom)))" }}>
+          <MobilePreviewView
+            data={landingData}
+            onBack={() => setMobileView("editor")}
+          />
+        </div>
+      )}
+
+      {/* ── MOBILE: bottom tab bar (always visible in linkhub mode) ── */}
+      <MobileTabBar
+        view={mobileView}
+        activeTab={activeTab}
+        onViewChange={setMobileView}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          setMobileView("editor");
+        }}
+      />
+
+      {/* ── DESKTOP: editor column (40%) ── */}
+      <div className="hidden lg:flex lg:w-[40%] lg:flex-col lg:overflow-hidden lg:border-r lg:border-hai/30">
+        <div className="flex-1 overflow-y-auto">
+          <EditorTabPanel {...tabPanelProps} />
+        </div>
+        <div className="border-t border-hai/30 px-5 py-4">
+          {saveBtn}
+        </div>
+      </div>
+
+      {/* ── DESKTOP: preview column (60%) ── */}
+      <div className="hidden lg:flex lg:w-[60%] lg:flex-col lg:overflow-hidden">
         <PreviewPanel data={landingData} />
       </div>
 
-      {/* Preview modal — mobile only */}
-      <PreviewModal
-        data={landingData}
-        open={previewOpen}
-        onClose={() => setPreviewOpen(false)}
-      />
     </div>
   );
 }

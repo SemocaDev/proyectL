@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { WagaraPattern } from "@/components/patterns";
+import { colors } from "@/lib/css-vars";
 import type { PatternType } from "@/components/patterns";
 
 const ALL_PATTERNS: PatternType[] = [
@@ -29,22 +30,22 @@ const PATTERN_INFO: Record<PatternType, { jp: string; meaning: string; anim: str
 };
 
 const COLOR_PALETTE = [
-  { name: "Shironeri", var: "bg-shironeri", hex: "#F9F7F2", label: "Fondo principal" },
-  { name: "Sumi",      var: "bg-sumi",      hex: "#111827", label: "Texto principal" },
-  { name: "Ginnezumi", var: "bg-ginnezumi", hex: "#4B5563", label: "Texto secundario" },
-  { name: "Hai",       var: "bg-hai",       hex: "#E5E7EB", label: "Bordes, divisores" },
-  { name: "Beni",      var: "bg-beni",      hex: "#B94047", label: "Acento principal" },
-  { name: "Shu",       var: "bg-shu",       hex: "#D3381C", label: "Acento cálido" },
-  { name: "Ai",        var: "bg-ai",        hex: "#2A4C7D", label: "Acento índigo" },
-  { name: "Uguisu",    var: "bg-uguisu",    hex: "#8A9A5B", label: "Éxito, verificado" },
+  { name: "Shironeri", var: "bg-shironeri", hex: colors.shironeri, label: "Fondo principal" },
+  { name: "Sumi",      var: "bg-sumi",      hex: colors.sumi,      label: "Texto principal" },
+  { name: "Ginnezumi", var: "bg-ginnezumi", hex: colors.ginnezumi, label: "Texto secundario" },
+  { name: "Hai",       var: "bg-hai",       hex: colors.hai,       label: "Bordes, divisores" },
+  { name: "Beni",      var: "bg-beni",      hex: colors.beni,      label: "Acento principal" },
+  { name: "Shu",       var: "bg-shu",       hex: colors.shu,       label: "Acento cálido" },
+  { name: "Ai",        var: "bg-ai",        hex: colors.ai,        label: "Acento índigo" },
+  { name: "Uguisu",    var: "bg-uguisu",    hex: colors.uguisu,    label: "Éxito, verificado" },
 ];
 
 export default function DesignPage() {
   const [selectedPattern, setSelectedPattern] = useState<PatternType>("seigaiha");
   const [opacity, setOpacity] = useState(0.12);
-  const [color, setColor] = useState("#B94047");
+  const [color, setColor] = useState<string>(colors.beni);
   const [isStatic, setIsStatic] = useState(false);
-  const [bgColor, setBgColor] = useState("#F9F7F2");
+  const [bgColor, setBgColor] = useState<string>(colors.shironeri);
 
   return (
     <div className="min-h-screen bg-shironeri font-sans">
@@ -79,13 +80,13 @@ export default function DesignPage() {
               static={isStatic}
             />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 text-center">
-              <p className="text-2xl font-light" style={{ color: "#111827" }}>
+              <p className="text-2xl font-light" style={{ color: colors.sumi }}>
                 {PATTERN_INFO[selectedPattern].jp}
               </p>
-              <p className="text-sm" style={{ color: "#4B5563" }}>
+              <p className="text-sm" style={{ color: colors.ginnezumi }}>
                 {selectedPattern} · opacity {opacity.toFixed(2)}
               </p>
-              <p className="text-xs" style={{ color: "#4B5563", opacity: 0.6 }}>
+              <p className="text-xs" style={{ color: colors.ginnezumi, opacity: 0.6 }}>
                 {PATTERN_INFO[selectedPattern].meaning}
               </p>
             </div>
@@ -107,7 +108,7 @@ export default function DesignPage() {
                 <WagaraPattern pattern={p} color={color} opacity={opacity} static />
                 <span
                   className="relative z-10 text-[9px] font-medium"
-                  style={{ color: "#111827" }}
+                  style={{ color: colors.sumi }}
                 >
                   {p}
                 </span>
@@ -243,7 +244,7 @@ export default function DesignPage() {
                 key={p}
                 className="relative overflow-hidden rounded-2xl border border-hai/60 bg-shironeri px-6 py-8 text-center"
               >
-                <WagaraPattern pattern={p} color="#B94047" opacity={0.08} />
+                <WagaraPattern pattern={p} color={colors.beni} opacity={0.08} />
                 <div className="relative z-10 space-y-2">
                   <div className="mx-auto h-px w-8 bg-beni" />
                   <p className="text-xl font-light text-sumi">{PATTERN_INFO[p].jp}</p>

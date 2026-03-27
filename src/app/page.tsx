@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer";
 import { WagaraPattern } from "@/components/patterns";
 import { UrlInput } from "@/components/home/url-input";
 import { getTranslations } from "next-intl/server";
+import { colors } from "@/lib/css-vars";
 
 export default async function HomePage() {
   const t = await getTranslations("home");
@@ -14,14 +15,13 @@ export default async function HomePage() {
       {/* Hero */}
       <main className="relative flex flex-1 flex-col items-center justify-center px-4 py-16">
         {/* Patrón seigaiha — olas de fondo más visibles */}
-        <WagaraPattern pattern="seigaiha" color="#B94047" opacity={0.10} />
+        <WagaraPattern pattern="seigaiha" color={colors.beni} opacity={0.10} />
 
         {/* Gradiente radial encima del patrón para difuminar bordes */}
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background:
-              "radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, #F9F7F2 100%)",
+            background: `radial-gradient(ellipse 70% 60% at 50% 50%, transparent 30%, ${colors.shironeri} 100%)`,
           }}
         />
 

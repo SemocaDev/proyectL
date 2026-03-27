@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { WagaraPattern } from "@/components/patterns";
+import { colors } from "@/lib/css-vars";
 import { DevMindsCredit } from "./devminds-credit";
 
 export function Footer() {
@@ -11,7 +12,7 @@ export function Footer() {
   return (
     <footer className="relative mt-auto border-t border-hai/50 bg-shironeri overflow-hidden">
       {/* Patrón tokusa sutil en el footer */}
-      <WagaraPattern pattern="tokusa" color="#4B5563" opacity={0.045} static />
+      <WagaraPattern pattern="tokusa" color={colors.ginnezumi} opacity={0.045} static />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-7 md:px-6">
         <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">

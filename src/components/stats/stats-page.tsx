@@ -9,6 +9,7 @@ import {
   XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from "recharts";
 import { WagaraPattern } from "@/components/patterns";
+import { colors, chartColors } from "@/lib/css-vars";
 import type { getLinkStats } from "@/actions/link-actions";
 
 type StatsData = Exclude<Awaited<ReturnType<typeof getLinkStats>>, { error: string }>;
@@ -18,11 +19,10 @@ interface StatsPageProps {
   backHref: string;
 }
 
-// Japanese color palette for charts
-const BENI = "#B94047";
-const HAI = "#E5E7EB";
-const GINNEZUMI = "#4B5563";
-const CHART_COLORS = ["#B94047", "#2A4C7D", "#8A9A5B", "#D3381C", "#4B5563", "#a16207", "#0e7490", "#7c3aed"];
+const BENI = colors.beni;
+const HAI = colors.hai;
+const GINNEZUMI = colors.ginnezumi;
+const CHART_COLORS = [...chartColors];
 
 export function StatsPage({ data, backHref }: StatsPageProps) {
   const t = useTranslations("stats");
@@ -43,7 +43,7 @@ export function StatsPage({ data, backHref }: StatsPageProps) {
     <div className="space-y-8">
       {/* ── Header ── */}
       <div className="relative overflow-hidden rounded-2xl border border-hai/60 bg-shironeri px-6 py-6">
-        <WagaraPattern pattern="seigaiha" color="#B94047" opacity={0.05} />
+        <WagaraPattern pattern="seigaiha" color={colors.beni} opacity={0.05} />
         <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <Link
@@ -230,7 +230,7 @@ function KpiCard({
 }) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-hai/60 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
-      <WagaraPattern pattern={pattern} color="#B94047" opacity={0.035} static />
+      <WagaraPattern pattern={pattern} color={colors.beni} opacity={0.035} static />
       <div className="relative z-10">
         <p className="text-[10px] font-medium uppercase tracking-wider text-ginnezumi/60 sm:text-xs">{label}</p>
         <p className={`mt-1.5 font-light ${isText ? "text-base text-sumi" : "text-2xl"} ${muted ? "text-ginnezumi" : "text-sumi"}`}>

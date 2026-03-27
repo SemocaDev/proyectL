@@ -1,5 +1,20 @@
 import { z } from "zod/v4";
 
+// ─── BgPattern (local union, no importar desde wagara-pattern para evitar dep "use client") ──
+export const BG_PATTERN_VALUES = [
+  "none",
+  "seigaiha",
+  "asanoha",
+  "shippo",
+  "ichimatsu",
+  "ryusuimon",
+  "tokusa",
+  "uroko",
+  "kikko",
+  "karakusa",
+] as const;
+export type BgPattern = (typeof BG_PATTERN_VALUES)[number];
+
 // ─── Sub-schemas para LinkHub ────────────────────────────────────────────────
 
 export const buttonStyleSchema = z.object({
@@ -11,17 +26,23 @@ export const linkhubLinkItemSchema = z.object({
   label: z.string().max(50),
   url: z.url(),
   icon: z.string().max(30).optional(),
+  highlighted: z.boolean().optional(),
 });
 
 export const themeSchema = z.object({
   accentColor: z.string().optional(),
   bgTheme: z.enum(["light", "cream", "dark"]).optional(),
+  bgColor: z.string().optional(),        // color libre de fondo (hex), toma prioridad sobre bgTheme
   buttonStyle: buttonStyleSchema.optional(),
+  buttonBorderColor: z.string().optional(), // color de borde de botones outline
+  bgPattern: z.enum(BG_PATTERN_VALUES).optional(),
+  patternOpacity: z.number().min(0.02).max(0.15).optional(),
 });
 
 export const landingDataSchema = z.object({
   title: z.string().max(100).optional(),
   bio: z.string().max(300).optional(),
+  avatar: z.string().max(10).optional(),
   links: z.array(linkhubLinkItemSchema).max(20).optional(),
   theme: themeSchema.optional(),
 });

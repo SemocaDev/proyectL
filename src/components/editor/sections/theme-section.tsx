@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { colors } from "@/lib/css-vars";
 import type { Theme } from "@/lib/schemas";
 
 interface ThemeSectionProps {
@@ -9,14 +10,14 @@ interface ThemeSectionProps {
 }
 
 const ACCENT_COLORS = [
-  "#B94047", // beni (default)
-  "#2563EB", // blue
-  "#059669", // emerald
-  "#7C3AED", // violet
-  "#DB2777", // pink
-  "#EA580C", // orange
-  "#0D9488", // teal
-  "#1a1a1a", // dark
+  colors.beni,    // beni (default)
+  "#2563EB",      // blue
+  "#059669",      // emerald
+  "#7C3AED",      // violet
+  "#DB2777",      // pink
+  "#EA580C",      // orange
+  "#0D9488",      // teal
+  "#1a1a1a",      // dark
 ];
 
 const BG_THEMES: { value: "light" | "cream" | "dark"; label: string }[] = [
@@ -44,7 +45,7 @@ export function ThemeSection({ theme, onChange }: ThemeSectionProps) {
               type="button"
               onClick={() => onChange({ ...theme, accentColor: color })}
               className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${
-                (theme.accentColor ?? "#B94047") === color
+                (theme.accentColor ?? colors.beni) === color
                   ? "border-sumi scale-110 ring-2 ring-sumi/20"
                   : "border-transparent"
               }`}
