@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!--
+    DevMinds Links — Logo Mark
+    Seigaiha pattern, 3 rows: 1 top / 2 middle / 3 bottom (partial)
+    Unit radius: 12px. Stagger: half unit = 12px horizontally, ~10.4px vertically
+  -->
+
+  <!-- ── Row 1 — 1 scale, centred ── -->
+  <path d="M8 38 A12 12 0 0 1 32 38"  stroke="#B94047" stroke-width="2"   stroke-linecap="round"/>
+  <path d="M11 38 A9 9 0 0 1 29 38"   stroke="#B94047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M14 38 A6 6 0 0 1 26 38"   stroke="#B94047" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+
+  <path d="M32 38 A12 12 0 0 1 56 38" stroke="#B94047" stroke-width="2"   stroke-linecap="round"/>
+  <path d="M35 38 A9 9 0 0 1 53 38"   stroke="#B94047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M38 38 A6 6 0 0 1 50 38"   stroke="#B94047" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- ── Row 2 — 2 scales (staggered) ── -->
+  <path d="M20 27.6 A12 12 0 0 1 44 27.6" stroke="#B94047" stroke-width="2"   stroke-linecap="round"/>
+  <path d="M23 27.6 A9 9 0 0 1 41 27.6"   stroke="#B94047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M26 27.6 A6 6 0 0 1 38 27.6"   stroke="#B94047" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- ── Row 3 — 1 scale (top, centred) ── -->
+  <path d="M8 17.2 A12 12 0 0 1 32 17.2"  stroke="#B94047" stroke-width="2"   stroke-linecap="round"/>
+  <path d="M11 17.2 A9 9 0 0 1 29 17.2"   stroke="#B94047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M14 17.2 A6 6 0 0 1 26 17.2"   stroke="#B94047" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+
+  <path d="M32 17.2 A12 12 0 0 1 56 17.2" stroke="#B94047" stroke-width="2"   stroke-linecap="round"/>
+  <path d="M35 17.2 A9 9 0 0 1 53 17.2"   stroke="#B94047" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M38 17.2 A6 6 0 0 1 50 17.2"   stroke="#B94047" stroke-width="1.1" stroke-linecap="round" opacity="0.7"/>
+</svg>

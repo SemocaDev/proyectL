@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { LanguageSwitcher } from "./language-switcher";
 import { SignInButton } from "./auth/sign-in-button";
 import { UserMenu } from "./auth/user-menu";
+import Image from "next/image";
 import Link from "next/link";
 
 export function Navbar() {
@@ -23,9 +24,14 @@ export function Navbar() {
     >
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5 md:px-6">
         {/* Logo */}
-        <Link href="/" className="group flex items-center gap-2.5">
-          {/* Línea decorativa beni */}
-          <span className="block h-4 w-px bg-beni transition-transform duration-300 group-hover:scale-y-125" />
+        <Link href="/" className="group flex items-center gap-2">
+          <Image
+            src="/favicon.svg"
+            alt="DevMinds Links"
+            width={24}
+            height={24}
+            className="transition-opacity duration-200 group-hover:opacity-80"
+          />
           <span className="font-credit text-sm font-semibold tracking-tight text-sumi transition-colors duration-200 group-hover:text-beni">
             DevMinds Links
           </span>

@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import { Inter, Doto } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "DevMinds Links",
+  description: "Acorta, personaliza y comparte tus links con estilo.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/favicon.svg",
+  },
+};
 
 const inter = Inter({
   variable: "--font-inter",

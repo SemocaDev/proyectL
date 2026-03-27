@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Background pill -->
+  <rect width="32" height="32" rx="7" fill="#F9F7F2"/>
+
+  <!--
+    Seigaiha (青海波) — overlapping semicircular scales, 3 units arranged in
+    a 2-bottom / 1-top stagger.  Each unit carries 3 concentric arcs.
+
+    Unit diameter = 13px  → radius = 6.5
+    Inner arc 1   radius = 4.5
+    Inner arc 2   radius = 2.5
+
+    Bottom-left  centre-x = 9,   base-y = 23
+    Bottom-right centre-x = 23,  base-y = 23
+    Top-centre   centre-x = 16,  base-y = 16.5
+  -->
+
+  <!-- ── Bottom-left scale ── -->
+  <!-- outer arc: cx=9, r=6.5  → from (2.5,23) to (15.5,23) -->
+  <path d="M2.5 23 A6.5 6.5 0 0 1 15.5 23" stroke="#B94047" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- mid arc:   cx=9, r=4.5  → from (4.5,23) to (13.5,23) -->
+  <path d="M4.5 23 A4.5 4.5 0 0 1 13.5 23" stroke="#B94047" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- inner arc: cx=9, r=2.5  → from (6.5,23) to (11.5,23) -->
+  <path d="M6.5 23 A2.5 2.5 0 0 1 11.5 23" stroke="#B94047" stroke-width="1.1" stroke-linecap="round"/>
+
+  <!-- ── Bottom-right scale ── -->
+  <!-- outer arc: cx=23, r=6.5  → from (16.5,23) to (29.5,23) -->
+  <path d="M16.5 23 A6.5 6.5 0 0 1 29.5 23" stroke="#B94047" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- mid arc:   cx=23, r=4.5  → from (18.5,23) to (27.5,23) -->
+  <path d="M18.5 23 A4.5 4.5 0 0 1 27.5 23" stroke="#B94047" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- inner arc: cx=23, r=2.5  → from (20.5,23) to (25.5,23) -->
+  <path d="M20.5 23 A2.5 2.5 0 0 1 25.5 23" stroke="#B94047" stroke-width="1.1" stroke-linecap="round"/>
+
+  <!-- ── Top-centre scale (staggered: sits in the gap between bottom two) ── -->
+  <!-- outer arc: cx=16, r=6.5  → from (9.5,16.5) to (22.5,16.5) -->
+  <path d="M9.5 16.5 A6.5 6.5 0 0 1 22.5 16.5" stroke="#B94047" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- mid arc:   cx=16, r=4.5  → from (11.5,16.5) to (20.5,16.5) -->
+  <path d="M11.5 16.5 A4.5 4.5 0 0 1 20.5 16.5" stroke="#B94047" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- inner arc: cx=16, r=2.5  → from (13.5,16.5) to (18.5,16.5) -->
+  <path d="M13.5 16.5 A2.5 2.5 0 0 1 18.5 16.5" stroke="#B94047" stroke-width="1.1" stroke-linecap="round"/>
+</svg>
