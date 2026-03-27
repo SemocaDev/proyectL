@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -8,22 +8,26 @@ import Link from "next/link";
 interface TermsConsentModalProps {
   open: boolean;
   onClose: () => void;
+  /** URL to redirect after login. Defaults to dashboard. */
+  callbackUrl?: string;
 }
 
-export function TermsConsentModal({ open, onClose }: TermsConsentModalProps) {
+export function TermsConsentModal({ open, onClose, callbackUrl = "/dashboard" }: TermsConsentModalProps) {
   const t = useTranslations("legal");
   const [accepted, setAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Reset checkbox each time the modal opens
+  useEffect(() => {
+    if (open) setAccepted(false);
+  }, [open]);
 
   if (!open) return null;
 
   async function handleContinue() {
     if (!accepted) return;
     setLoading(true);
-    // termsAcceptedAt se guarda en el callback signIn de auth.ts al crear el usuario,
-    // o vía la server action si el usuario ya existía. Lo pasamos como callbackUrl
-    // con un param para que el signIn callback lo detecte.
-    await signIn("google", { callbackUrl: "/?termsAccepted=1" });
+    await signIn("google", { callbackUrl });
   }
 
   return (
