@@ -22,17 +22,17 @@ export function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3.5 md:px-6">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5 md:px-10">
         {/* Logo */}
-        <Link href="/" className="group flex items-center gap-2">
+        <Link href="/" className="group flex items-center gap-2.5">
           <Image
             src="/favicon.svg"
             alt="DevMinds Links"
-            width={24}
-            height={24}
+            width={30}
+            height={30}
             className="transition-opacity duration-200 group-hover:opacity-80"
           />
-          <span className="font-brand text-base font-light italic tracking-wide text-sumi transition-colors duration-200 group-hover:text-beni">
+          <span className="font-brand text-xl font-light italic tracking-wide text-sumi transition-colors duration-200 group-hover:text-beni">
             DevMinds Links
           </span>
         </Link>

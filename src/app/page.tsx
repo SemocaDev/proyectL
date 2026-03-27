@@ -14,7 +14,7 @@ export default async function HomePage() {
       {/* Hero */}
       <main className="relative flex flex-1 flex-col items-center justify-center px-4 py-16">
         {/* Patrón seigaiha — olas de fondo más visibles */}
-        <WagaraPattern pattern="seigaiha" color="#B94047" opacity={0.065} />
+        <WagaraPattern pattern="seigaiha" color="#B94047" opacity={0.10} />
 
         {/* Gradiente radial encima del patrón para difuminar bordes */}
         <div
