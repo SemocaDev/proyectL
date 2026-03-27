@@ -5,6 +5,7 @@ import { deleteLink } from "@/actions/link-actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import type { ShortLink } from "@/db/schema";
 
 type LinkRow = Pick<
@@ -89,6 +90,12 @@ export function LinkCard({ link }: { link: LinkRow }) {
         >
           {t("edit")}
         </button>
+        <Link
+          href={`/dashboard/${link.id}/stats`}
+          className="rounded-md border border-hai px-3 py-1.5 text-xs text-ginnezumi transition-colors hover:border-ai hover:text-ai sm:px-4"
+        >
+          {t("stats")}
+        </Link>
         <button
           onClick={handleDelete}
           disabled={deleting}

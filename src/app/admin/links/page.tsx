@@ -74,9 +74,14 @@ export default async function AdminLinksPage({
 }
 
 function AdminLinkActions({ linkId, status }: { linkId: string; status: string }) {
-  // Acciones de moderación — implementación con form actions
   return (
     <div className="ml-4 flex gap-2">
+      <Link
+        href={`/admin/links/${linkId}/stats`}
+        className="rounded-md border border-hai px-3 py-1.5 text-xs text-ginnezumi transition-colors hover:border-ai hover:text-ai"
+      >
+        Stats
+      </Link>
       <form action={`/api/admin/links/${linkId}/disable`} method="POST">
         <button
           type="submit"

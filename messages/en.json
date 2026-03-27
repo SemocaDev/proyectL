@@ -56,8 +56,27 @@
     "delete": "Delete",
     "confirmDelete": "Delete this link? This cannot be undone.",
     "edit": "Edit",
+    "stats": "Stats",
     "deleted": "Link deleted.",
     "deleteFailed": "Could not delete."
+  },
+  "stats": {
+    "title": "Analytics",
+    "last30days": "Last 30 days",
+    "totalClicks": "Total clicks",
+    "uniqueVisitors": "Unique visitors",
+    "botClicks": "Bots filtered",
+    "clicksOverTime": "Clicks over time",
+    "byCountry": "By country",
+    "byDevice": "By device",
+    "byBrowser": "By browser",
+    "byOs": "By OS",
+    "byReferer": "By source",
+    "noData": "No data in this period",
+    "direct": "Direct",
+    "unknown": "Unknown",
+    "backToDashboard": "Back to dashboard",
+    "viewLink": "View link"
   },
   "admin": {
     "title": "Administration",

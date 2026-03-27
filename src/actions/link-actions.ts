@@ -2,12 +2,12 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { shortLinks } from "@/db/schema";
+import { shortLinks, linkClicks } from "@/db/schema";
 import { createLinkSchema, updateLinkSchema } from "@/lib/schemas";
 import { generateUniqueShortCode } from "@/lib/short-code";
 import { checkRateLimit, LIMITS } from "@/lib/rate-limit";
 import { USER_LINK_LIMIT } from "@/lib/config";
-import { eq, count, sql } from "drizzle-orm";
+import { eq, count, sql, gte, and, desc } from "drizzle-orm";
 import { headers } from "next/headers";
 import { verifyLinkOwnership } from "@/lib/security";
 
@@ -117,6 +117,137 @@ export async function getUserLinks() {
     .orderBy(sql`${shortLinks.createdAt} DESC`);
 
   return { links };
+}
+
+export async function getLinkStats(linkId: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
+  // Allow admin to view any link stats, regular users only their own
+  if (session.user.role !== "ADMIN") {
+    await verifyLinkOwnership(linkId);
+  }
+
+  const since30d = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  // All queries in parallel
+  const [
+    linkRow,
+    clicksByDay,
+    byCountry,
+    byDevice,
+    byBrowser,
+    byOs,
+    byReferer,
+    totalUnique,
+    totalBots,
+  ] = await Promise.all([
+    // Link metadata
+    db
+      .select({
+        id: shortLinks.id,
+        shortCode: shortLinks.shortCode,
+        title: shortLinks.title,
+        mode: shortLinks.mode,
+        targetUrl: shortLinks.targetUrl,
+        clickCount: shortLinks.clickCount,
+        status: shortLinks.status,
+        createdAt: shortLinks.createdAt,
+      })
+      .from(shortLinks)
+      .where(eq(shortLinks.id, linkId))
+      .limit(1),
+
+    // Clicks per day (last 30 days)
+    db
+      .select({
+        date: sql<string>`date_trunc('day', ${linkClicks.timestamp})::date::text`,
+        clicks: count(),
+      })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(sql`date_trunc('day', ${linkClicks.timestamp})`)
+      .orderBy(sql`date_trunc('day', ${linkClicks.timestamp})`),
+
+    // Top countries
+    db
+      .select({ country: linkClicks.country, clicks: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(linkClicks.country)
+      .orderBy(desc(count()))
+      .limit(8),
+
+    // Device types
+    db
+      .select({ device: linkClicks.deviceType, clicks: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(linkClicks.deviceType)
+      .orderBy(desc(count())),
+
+    // Browsers
+    db
+      .select({ browser: linkClicks.browserName, clicks: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(linkClicks.browserName)
+      .orderBy(desc(count()))
+      .limit(6),
+
+    // OS
+    db
+      .select({ os: linkClicks.osName, clicks: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(linkClicks.osName)
+      .orderBy(desc(count()))
+      .limit(6),
+
+    // Top referers
+    db
+      .select({ referer: linkClicks.referer, clicks: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d)))
+      .groupBy(linkClicks.referer)
+      .orderBy(desc(count()))
+      .limit(8),
+
+    // Unique sessions (approximate unique visitors)
+    db
+      .select({ unique: sql<number>`count(distinct ${linkClicks.sessionId})` })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), gte(linkClicks.timestamp, since30d))),
+
+    // Bot clicks
+    db
+      .select({ bots: count() })
+      .from(linkClicks)
+      .where(and(eq(linkClicks.linkId, linkId), eq(linkClicks.isBot, true), gte(linkClicks.timestamp, since30d))),
+  ]);
+
+  if (!linkRow[0]) return { error: "Not found" };
+
+  // Fill missing days in the 30d range with 0
+  const dayMap = new Map(clicksByDay.map((r) => [r.date, Number(r.clicks)]));
+  const filledDays: { date: string; clicks: number }[] = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+    const key = d.toISOString().slice(0, 10);
+    filledDays.push({ date: key, clicks: dayMap.get(key) ?? 0 });
+  }
+
+  return {
+    link: linkRow[0],
+    clicksByDay: filledDays,
+    byCountry: byCountry.map((r) => ({ name: r.country ?? "Unknown", value: Number(r.clicks) })),
+    byDevice: byDevice.map((r) => ({ name: r.device ?? "Unknown", value: Number(r.clicks) })),
+    byBrowser: byBrowser.map((r) => ({ name: r.browser ?? "Unknown", value: Number(r.clicks) })),
+    byOs: byOs.map((r) => ({ name: r.os ?? "Unknown", value: Number(r.clicks) })),
+    byReferer: byReferer.map((r) => ({ name: r.referer ?? "Direct", value: Number(r.clicks) })),
+    uniqueVisitors: Number(totalUnique[0]?.unique ?? 0),
+    botClicks: Number(totalBots[0]?.bots ?? 0),
+  };
 }
 
 export async function getLinkById(linkId: string) {

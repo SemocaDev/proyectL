@@ -56,8 +56,27 @@
     "delete": "Eliminar",
     "confirmDelete": "¿Eliminar este link? Esta acción no se puede deshacer.",
     "edit": "Editar",
+    "stats": "Estadísticas",
     "deleted": "Link eliminado.",
     "deleteFailed": "No se pudo eliminar."
+  },
+  "stats": {
+    "title": "Estadísticas",
+    "last30days": "Últimos 30 días",
+    "totalClicks": "Clicks totales",
+    "uniqueVisitors": "Visitantes únicos",
+    "botClicks": "Bots filtrados",
+    "clicksOverTime": "Clicks por día",
+    "byCountry": "Por país",
+    "byDevice": "Por dispositivo",
+    "byBrowser": "Por navegador",
+    "byOs": "Por sistema operativo",
+    "byReferer": "Por origen",
+    "noData": "Sin datos en este período",
+    "direct": "Directo",
+    "unknown": "Desconocido",
+    "backToDashboard": "Volver al panel",
+    "viewLink": "Ver link"
   },
   "admin": {
     "title": "Administración",
