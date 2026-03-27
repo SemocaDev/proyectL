@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { motion, useReducedMotion, type TargetAndTransition, type Transition } from "framer-motion";
 
 export type PatternType =
@@ -260,9 +261,10 @@ export function WagaraPattern({
   opacity = 0.07,
   static: isStatic = false,
 }: WagaraPatternProps) {
+  const uid = useId();
   const shouldReduce = useReducedMotion();
   const def = PATTERN_DEFS[pattern];
-  const patternId = `wp-${pattern}-${Math.random().toString(36).slice(2, 7)}`;
+  const patternId = `wp-${pattern}-${uid.replace(/:/g, "")}`;
   const animKey = (!isStatic && !shouldReduce && def.anim) ? def.anim : "none";
   const { animate, transition } = (ANIM_VARIANTS[animKey] ?? {}) as {
     animate?: TargetAndTransition;
