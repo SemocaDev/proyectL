@@ -84,9 +84,15 @@ export function LinkCard({ link }: { link: LinkRow }) {
           {t("copy")}
         </button>
         <button
+          onClick={() => router.push(`/dashboard/${link.id}/edit`)}
+          className="rounded-md border border-hai px-3 py-1.5 text-xs text-ginnezumi transition-colors hover:border-beni hover:text-beni sm:px-4"
+        >
+          {t("edit")}
+        </button>
+        <button
           onClick={handleDelete}
           disabled={deleting}
-          className="rounded-md px-3 py-1.5 text-xs text-ginnezumi/50 transition-colors hover:text-shu disabled:opacity-40"
+          className="ml-auto rounded-md px-3 py-1.5 text-xs text-ginnezumi/50 transition-colors hover:text-shu disabled:opacity-40"
         >
           {deleting ? "..." : t("delete")}
         </button>

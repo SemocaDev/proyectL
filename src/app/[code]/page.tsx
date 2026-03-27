@@ -1,11 +1,12 @@
 import { db } from "@/db";
-import { linkClicks, shortLinks } from "@/db/schema";
+import { linkClicks, shortLinks, users } from "@/db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { redirect, notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { checkRateLimit, LIMITS } from "@/lib/rate-limit";
 import { hashIP, cleanReferer, parseUserAgent } from "@/lib/analytics-utils";
-import { WagaraPattern } from "@/components/wagara-pattern";
+import { CountdownPage } from "@/components/redirect/countdown-page";
+import { LinkhubPreview } from "@/components/editor/linkhub-preview";
 import type { LandingData } from "@/lib/schemas";
 
 interface Props {
@@ -46,16 +47,23 @@ export default async function ShortCodePage({ params }: Props) {
     );
   }
 
-  // Look up short code
-  const [link] = await db
-    .select()
+  // Look up short code + creator name
+  const [row] = await db
+    .select({
+      link: shortLinks,
+      creatorName: users.name,
+    })
     .from(shortLinks)
+    .leftJoin(users, eq(shortLinks.ownerId, users.id))
     .where(and(eq(shortLinks.shortCode, code), eq(shortLinks.status, "active")))
     .limit(1);
 
-  if (!link) {
+  if (!row) {
     notFound();
   }
+
+  const link = row.link;
+  const creatorName = row.creatorName;
 
   // Check click limit
   if (link.clickLimit !== null && link.clickCount >= link.clickLimit) {
@@ -67,79 +75,28 @@ export default async function ShortCodePage({ params }: Props) {
 
   // --- Mode: redirect ---
   if (link.mode === "redirect" && link.targetUrl) {
+    // Countdown page if delay is configured
+    if (link.redirectDelay && link.redirectDelay > 0) {
+      return (
+        <CountdownPage
+          title={link.title}
+          creatorName={creatorName}
+          targetUrl={link.targetUrl}
+          delay={link.redirectDelay}
+        />
+      );
+    }
     redirect(link.targetUrl);
   }
 
   // --- Mode: linkhub ---
-  const data = (link.landingData as LandingData) ?? {};
-  const accent = data.theme?.accentColor ?? "#B94047";
-  const displayTitle = data.title || link.title;
+  const rawData = (link.landingData as LandingData) ?? {};
+  const data: LandingData = {
+    ...rawData,
+    title: rawData.title || link.title || undefined,
+  };
 
-  return (
-    <div className="relative min-h-screen bg-shironeri">
-      <WagaraPattern pattern="seigaiha" opacity={0.025} />
-
-      <div className="relative z-10 mx-auto max-w-md px-4 py-12 sm:py-16">
-        {/* Profile header */}
-        <div className="mb-8 text-center space-y-3 sm:mb-10">
-          <div
-            className="mx-auto h-px w-12"
-            style={{ backgroundColor: accent }}
-          />
-          {displayTitle && (
-            <h1 className="text-xl font-light text-sumi sm:text-2xl">
-              {displayTitle}
-            </h1>
-          )}
-          {data.bio && (
-            <p className="mx-auto max-w-xs text-sm leading-relaxed text-ginnezumi">
-              {data.bio}
-            </p>
-          )}
-        </div>
-
-        {/* Link buttons */}
-        {data.links && data.links.length > 0 ? (
-          <div className="space-y-3">
-            {data.links.map((item, i) => (
-              <a
-                key={i}
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full rounded-lg border border-hai bg-white px-5 py-3.5 text-center text-sm font-medium text-sumi shadow-sm transition-all hover:shadow-md active:scale-[0.98] sm:px-6 sm:py-4"
-                style={{
-                  borderLeftColor: accent,
-                  borderLeftWidth: "3px",
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-lg border border-dashed border-hai bg-white/60 py-12 text-center">
-            <p className="text-sm text-ginnezumi">
-              This page is being set up.
-            </p>
-            <p className="mt-1 text-xs text-ginnezumi/50">
-              Links will appear here soon.
-            </p>
-          </div>
-        )}
-
-        {/* Hub footer */}
-        <div className="mt-10 text-center sm:mt-12">
-          <a
-            href="https://l.devminds.online"
-            className="text-[11px] text-ginnezumi/30 transition-colors hover:text-ginnezumi/60"
-          >
-            Powered by DevMinds Links
-          </a>
-        </div>
-      </div>
-    </div>
-  );
+  return <LinkhubPreview data={data} embedded />;
 }
 
 async function trackClick(

@@ -2,8 +2,8 @@
 
 import { auth } from "@/lib/auth";
 import { db } from "@/db";
-import { shortLinks, linkClicks } from "@/db/schema";
-import { createLinkSchema } from "@/lib/schemas";
+import { shortLinks } from "@/db/schema";
+import { createLinkSchema, updateLinkSchema } from "@/lib/schemas";
 import { generateUniqueShortCode } from "@/lib/short-code";
 import { checkRateLimit, LIMITS } from "@/lib/rate-limit";
 import { USER_LINK_LIMIT } from "@/lib/config";
@@ -15,22 +15,19 @@ export async function createLink(input: {
   targetUrl: string;
   mode: "redirect" | "linkhub";
   title?: string;
+  redirectDelay?: number;
+  landingData?: Record<string, unknown>;
 }) {
   const session = await auth();
-  if (!session?.user) {
-    return { error: "Unauthorized" };
-  }
+  if (!session?.user) return { error: "Unauthorized" };
 
   const parsed = createLinkSchema.safeParse(input);
-  if (!parsed.success) {
-    return { error: "Invalid input" };
-  }
+  if (!parsed.success) return { error: "Invalid input" };
 
   const headerStore = await headers();
   const ip =
     headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 
-  // Rate limit por usuario
   const { success } = await checkRateLimit(
     `create:${session.user.id}`,
     LIMITS.CREATE_AUTH.limit,
@@ -38,7 +35,6 @@ export async function createLink(input: {
   );
   if (!success) return { error: "Rate limit exceeded. Try again in a minute." };
 
-  // Límite de links por usuario
   const [{ total }] = await db
     .select({ total: count() })
     .from(shortLinks)
@@ -58,6 +54,8 @@ export async function createLink(input: {
       mode: parsed.data.mode,
       targetUrl: parsed.data.targetUrl,
       title: parsed.data.title ?? null,
+      redirectDelay: parsed.data.redirectDelay ?? null,
+      landingData: parsed.data.landingData ?? null,
     })
     .returning();
 
@@ -66,6 +64,29 @@ export async function createLink(input: {
     shortUrl: `${process.env.NEXT_PUBLIC_APP_URL}/${link.shortCode}`,
     id: link.id,
   };
+}
+
+export async function updateLink(
+  linkId: string,
+  data: {
+    targetUrl?: string;
+    mode?: "redirect" | "linkhub";
+    title?: string;
+    redirectDelay?: number | null;
+    landingData?: Record<string, unknown>;
+  }
+) {
+  await verifyLinkOwnership(linkId);
+
+  const parsed = updateLinkSchema.safeParse(data);
+  if (!parsed.success) return { error: "Invalid input" };
+
+  await db
+    .update(shortLinks)
+    .set({ ...parsed.data, updatedAt: new Date() })
+    .where(eq(shortLinks.id, linkId));
+
+  return { success: true };
 }
 
 export async function deleteLink(linkId: string) {
@@ -87,6 +108,8 @@ export async function getUserLinks() {
       title: shortLinks.title,
       status: shortLinks.status,
       clickCount: shortLinks.clickCount,
+      redirectDelay: shortLinks.redirectDelay,
+      landingData: shortLinks.landingData,
       createdAt: shortLinks.createdAt,
     })
     .from(shortLinks)
@@ -96,21 +119,19 @@ export async function getUserLinks() {
   return { links };
 }
 
-export async function updateLink(
-  linkId: string,
-  data: {
-    targetUrl?: string;
-    mode?: "redirect" | "linkhub";
-    title?: string;
-    landingData?: Record<string, unknown>;
-  }
-) {
+export async function getLinkById(linkId: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "Unauthorized" };
+
   await verifyLinkOwnership(linkId);
 
-  await db
-    .update(shortLinks)
-    .set({ ...data, updatedAt: new Date() })
-    .where(eq(shortLinks.id, linkId));
+  const [link] = await db
+    .select()
+    .from(shortLinks)
+    .where(eq(shortLinks.id, linkId))
+    .limit(1);
 
-  return { success: true };
+  if (!link) return { error: "Not found" };
+
+  return { link };
 }

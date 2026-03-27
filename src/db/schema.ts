@@ -150,6 +150,7 @@ export const shortLinks = pgTable(
     tags: text("tags").array(),
     customAlias: varchar("custom_alias", { length: 50 }),
     passwordHash: varchar("password_hash", { length: 255 }),
+    redirectDelay: integer("redirect_delay"),
     clickLimit: integer("click_limit"),
     clickCount: integer("click_count").default(0).notNull(),
     status: linkStatusEnum("status").default("active").notNull(),
