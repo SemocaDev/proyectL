@@ -120,12 +120,17 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
               btnStyle.backgroundColor = accent;
             } else {
               if (btnBgColor) btnStyle.backgroundColor = btnBgColor;
-              else if (isFilled) {
+              if (btnTextColor) btnStyle.color = btnTextColor;
+              // Use only longhand border properties to avoid shorthand conflicts
+              if (btnBorderColor) {
+                btnStyle.borderTopColor = btnBorderColor;
+                btnStyle.borderRightColor = btnBorderColor;
+                btnStyle.borderBottomColor = btnBorderColor;
+                btnStyle.borderLeftColor = btnBorderColor;
+              } else if (isFilled && !btnBgColor) {
                 btnStyle.borderLeftColor = accent;
                 btnStyle.borderLeftWidth = "3px";
               }
-              if (btnBorderColor) btnStyle.borderColor = btnBorderColor;
-              if (btnTextColor) btnStyle.color = btnTextColor;
             }
 
             return (
