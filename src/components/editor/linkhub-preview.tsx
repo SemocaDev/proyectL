@@ -52,22 +52,108 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
   const btnBorderColor = data.theme?.buttonBorderColor ?? null;
   const bgPattern      = data.theme?.bgPattern;
   const patternOpacity = data.theme?.patternOpacity ?? 0.06;
+  const cardColor      = data.theme?.cardColor ?? null;
 
   // Resolución del color de fondo: bgColor tiene prioridad, luego bgTheme legacy, luego blanco
   const bgHex = data.theme?.bgColor
     ?? BG_THEME_HEX[data.theme?.bgTheme ?? "light"]
     ?? "#FFFFFF";
 
-  const textColor    = resolveTextColor(bgHex);
-  const subTextColor = resolveSubTextColor(bgHex);
+  // When card is present, text colors are based on card color; otherwise on page bg
+  const contentBgHex = cardColor ?? bgHex;
+  const textColor    = resolveTextColor(contentBgHex);
+  const subTextColor = resolveSubTextColor(contentBgHex);
   const isPageDark   = isDark(bgHex);
+  const isCardDark   = cardColor ? isDark(cardColor) : isPageDark;
   const patternColor = isPageDark ? "#ffffff" : colors.sumi;
 
-  const btnClasses = getButtonClasses(data.theme?.buttonStyle, isPageDark ? "dark" : "light");
+  const btnClasses = getButtonClasses(data.theme?.buttonStyle, isCardDark ? "dark" : "light");
   const shapeOnly  = getShapeClass(data.theme?.buttonStyle);
   const isFilled   = data.theme?.buttonStyle?.variant !== "outline";
 
   const wrapperStyle = { backgroundColor: bgHex };
+
+  // ── Content block (shared between card and no-card modes) ──
+  const content = (
+    <>
+      {/* Profile header */}
+      <div className="mb-6 space-y-2.5 text-center">
+        {/* Avatar emoji */}
+        {data.avatar && (
+          <div
+            className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full text-5xl"
+            style={{
+              fontFamily: EMOJI_FONT,
+              backgroundColor: isCardDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)",
+            }}
+          >
+            {data.avatar}
+          </div>
+        )}
+
+        <div className="mx-auto h-px w-10" style={{ backgroundColor: accent }} />
+
+        {data.title && (
+          <h1 className={`font-light ${embedded ? "text-xl sm:text-2xl" : "text-lg"} ${textColor}`}>
+            {data.title}
+          </h1>
+        )}
+        {data.bio && (
+          <p className={`mx-auto max-w-xs text-sm leading-relaxed ${subTextColor}`}>
+            {data.bio}
+          </p>
+        )}
+      </div>
+
+      {/* Link buttons */}
+      {data.links && data.links.length > 0 ? (
+        <div className="space-y-2.5">
+          {data.links.map((item, i) => {
+            const IconComp   = item.icon ? PLATFORM_ICONS[item.icon]?.svg : null;
+            const isHigh     = !!item.highlighted;
+
+            let inlineStyle: React.CSSProperties | undefined;
+            if (isHigh) {
+              inlineStyle = { backgroundColor: accent };
+            } else if (isFilled) {
+              inlineStyle = { borderLeftColor: accent, borderLeftWidth: "3px" };
+            } else if (btnBorderColor) {
+              inlineStyle = { borderColor: btnBorderColor };
+            }
+
+            return (
+              <a
+                key={i}
+                href={embedded ? item.url : undefined}
+                target={embedded ? "_blank" : undefined}
+                rel={embedded ? "noopener noreferrer" : undefined}
+                onClick={embedded ? undefined : (e) => e.preventDefault()}
+                className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-all active:scale-[0.98] ${
+                  isHigh ? `${shapeOnly} text-white` : `${btnClasses} ${textColor}`
+                }`}
+                style={inlineStyle}
+              >
+                {IconComp && <IconComp className="h-4 w-4 shrink-0 opacity-60" />}
+                <span className="flex-1 text-center">{item.label || "—"}</span>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <div
+          className="rounded-lg border border-dashed py-10 text-center"
+          style={{
+            borderColor: isCardDark ? "rgba(255,255,255,0.2)" : "#E5E7EB",
+            backgroundColor: isCardDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.6)",
+          }}
+        >
+          <p className={`text-sm ${subTextColor}`}>
+            {embedded ? t("settingUp") : t("noLinksPreview")}
+          </p>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div
@@ -80,92 +166,25 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
           pattern={bgPattern as PatternType}
           opacity={patternOpacity}
           color={patternColor}
-          static
+          static={!data.theme?.patternAnimated}
         />
       )}
 
       <div className={`relative z-10 mx-auto max-w-md px-4 ${embedded ? "py-12 sm:py-16" : "py-8"}`}>
-        {/* Profile header */}
-        <div className="mb-6 space-y-2.5 text-center">
-          {/* Avatar emoji */}
-          {data.avatar && (
-            <div
-              className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full text-5xl"
-              style={{
-                fontFamily: EMOJI_FONT,
-                backgroundColor: isPageDark ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)",
-              }}
-            >
-              {data.avatar}
-            </div>
-          )}
-
-          <div className="mx-auto h-px w-10" style={{ backgroundColor: accent }} />
-
-          {data.title && (
-            <h1 className={`font-light ${embedded ? "text-xl sm:text-2xl" : "text-lg"} ${textColor}`}>
-              {data.title}
-            </h1>
-          )}
-          {data.bio && (
-            <p className={`mx-auto max-w-xs text-sm leading-relaxed ${subTextColor}`}>
-              {data.bio}
-            </p>
-          )}
-        </div>
-
-        {/* Link buttons */}
-        {data.links && data.links.length > 0 ? (
-          <div className="space-y-2.5">
-            {data.links.map((item, i) => {
-              const IconComp   = item.icon ? PLATFORM_ICONS[item.icon]?.svg : null;
-              const isHigh     = !!item.highlighted;
-
-              // Estilo inline para botones — soporta buttonBorderColor
-              let inlineStyle: React.CSSProperties | undefined;
-              if (isHigh) {
-                inlineStyle = { backgroundColor: accent };
-              } else if (isFilled) {
-                inlineStyle = { borderLeftColor: accent, borderLeftWidth: "3px" };
-              } else if (btnBorderColor) {
-                // outline con color de borde personalizado
-                inlineStyle = { borderColor: btnBorderColor };
-              }
-
-              return (
-                <a
-                  key={i}
-                  href={embedded ? item.url : undefined}
-                  target={embedded ? "_blank" : undefined}
-                  rel={embedded ? "noopener noreferrer" : undefined}
-                  onClick={embedded ? undefined : (e) => e.preventDefault()}
-                  className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-all active:scale-[0.98] ${
-                    isHigh ? `${shapeOnly} text-white` : `${btnClasses} ${textColor}`
-                  }`}
-                  style={inlineStyle}
-                >
-                  {IconComp && <IconComp className="h-4 w-4 shrink-0 opacity-60" />}
-                  <span className="flex-1 text-center">{item.label || "—"}</span>
-                </a>
-              );
-            })}
+        {/* Card wrapper — when cardColor is set, wraps content in an elevated card */}
+        {cardColor ? (
+          <div
+            className="rounded-2xl px-5 py-8 shadow-lg ring-1 ring-black/5"
+            style={{ backgroundColor: cardColor }}
+          >
+            {content}
           </div>
         ) : (
-          <div
-            className="rounded-lg border border-dashed py-10 text-center"
-            style={{
-              borderColor: isPageDark ? "rgba(255,255,255,0.2)" : "#E5E7EB",
-              backgroundColor: isPageDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.6)",
-            }}
-          >
-            <p className={`text-sm ${subTextColor}`}>
-              {embedded ? t("settingUp") : t("noLinksPreview")}
-            </p>
-          </div>
+          content
         )}
 
         {/* Footer */}
-        <div className="mt-8 text-center">
+        <div className={`${cardColor ? "mt-4" : "mt-8"} text-center`}>
           {embedded ? (
             <a
               href="https://l.devminds.online"

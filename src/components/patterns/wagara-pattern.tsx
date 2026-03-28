@@ -151,16 +151,108 @@ function KikkoPaths({ stroke }: { stroke: string }) {
   );
 }
 
+/**
+ * Karakusa — algorithmically generated vine scrollwork using logarithmic spirals.
+ *
+ * Based on the mathematical model: r(θ) = a·e^(b·θ)
+ * Each spiral can branch into two children with alternating rotation direction
+ * and reduced scale (s ≈ 0.5), creating the characteristic Japanese arabesque.
+ */
+
+/** Sample a logarithmic spiral and return SVG path data using cubic bezier approximation */
+function spiralPath(
+  cx: number, cy: number,
+  a: number, b: number,
+  thetaStart: number, thetaEnd: number,
+  steps: number,
+): string {
+  const pts: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const theta = thetaStart + (thetaEnd - thetaStart) * (i / steps);
+    const r = a * Math.exp(b * theta);
+    pts.push([cx + r * Math.cos(theta), cy + r * Math.sin(theta)]);
+  }
+
+  // Convert sampled points into cubic bezier segments using Catmull-Rom → Bezier
+  let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)];
+    const p1 = pts[i];
+    const p2 = pts[i + 1];
+    const p3 = pts[Math.min(pts.length - 1, i + 2)];
+    // Catmull-Rom to cubic bezier conversion (tension = 0.5)
+    const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+    d += ` C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+
+/** Get a point on a logarithmic spiral */
+function spiralPoint(cx: number, cy: number, a: number, b: number, theta: number): [number, number] {
+  const r = a * Math.exp(b * theta);
+  return [cx + r * Math.cos(theta), cy + r * Math.sin(theta)];
+}
+
+/** Small leaf shape at a given point and angle */
+function leafPath(x: number, y: number, angle: number, size: number): string {
+  const dx = Math.cos(angle) * size;
+  const dy = Math.sin(angle) * size;
+  const nx = -dy * 0.5;
+  const ny = dx * 0.5;
+  return `M${x.toFixed(1)},${y.toFixed(1)} C${(x + dx * 0.3 + nx).toFixed(1)},${(y + dy * 0.3 + ny).toFixed(1)} ${(x + dx * 0.7 + nx).toFixed(1)},${(y + dy * 0.7 + ny).toFixed(1)} ${(x + dx).toFixed(1)},${(y + dy).toFixed(1)} C${(x + dx * 0.7 - nx).toFixed(1)},${(y + dy * 0.7 - ny).toFixed(1)} ${(x + dx * 0.3 - nx).toFixed(1)},${(y + dy * 0.3 - ny).toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}`;
+}
+
 function KarakusaPaths({ stroke }: { stroke: string }) {
+  const PI = Math.PI;
+
+  // Main vine — mother spiral (counterclockwise, b > 0)
+  const mainD = spiralPath(50, 50, 5, 0.18, -PI, 2.2 * PI, 40);
+
+  // Branch point 1: at θ ≈ π (halfway through main spiral)
+  const [bx1, by1] = spiralPoint(50, 50, 5, 0.18, PI);
+  // Child spiral 1: clockwise (b < 0), smaller scale
+  const child1D = spiralPath(bx1, by1, 3, -0.22, 0, 1.8 * PI, 24);
+
+  // Branch point 2: at θ ≈ 0.3π
+  const [bx2, by2] = spiralPoint(50, 50, 5, 0.18, 0.3 * PI);
+  // Child spiral 2: clockwise, even smaller
+  const child2D = spiralPath(bx2, by2, 2.5, -0.20, PI * 0.5, 2 * PI, 20);
+
+  // Branch point 3: grandchild from child1 at θ ≈ π
+  const [bx3, by3] = spiralPoint(bx1, by1, 3, -0.22, PI);
+  const grandD = spiralPath(bx3, by3, 1.8, 0.25, 0, 1.5 * PI, 16);
+
+  // Small tendril from edge (connects to adjacent tile)
+  const edgeD = spiralPath(0, 50, 2, 0.20, -0.3 * PI, 1.2 * PI, 16);
+
+  // Leaves at branch junctions
+  const leaf1 = leafPath(bx1, by1, PI * 0.7, 5);
+  const leaf2 = leafPath(bx2, by2, -PI * 0.3, 4);
+  const leaf3 = leafPath(bx3, by3, PI * 1.2, 3.5);
+
   return (
     <>
-      <path d="M10 50 Q20 20 40 30 Q60 40 50 10" fill="none" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M50 10 Q80 0 70 30 Q60 50 90 40" fill="none" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M40 30 Q30 50 10 50 Q-10 50 0 70" fill="none" stroke={stroke} strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M40 30 Q50 60 30 80" fill="none" stroke={stroke} strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
-      <circle cx="40" cy="30" r="3" fill={stroke} opacity="0.4" />
-      <circle cx="10" cy="50" r="2" fill={stroke} opacity="0.3" />
-      <circle cx="50" cy="10" r="2" fill={stroke} opacity="0.3" />
+      {/* Main vine spiral */}
+      <path d={mainD} fill="none" stroke={stroke} strokeWidth="1.3" strokeLinecap="round" />
+      {/* Child spiral 1 (clockwise) */}
+      <path d={child1D} fill="none" stroke={stroke} strokeWidth="1.0" strokeLinecap="round" />
+      {/* Child spiral 2 (clockwise) */}
+      <path d={child2D} fill="none" stroke={stroke} strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
+      {/* Grandchild spiral (counterclockwise) */}
+      <path d={grandD} fill="none" stroke={stroke} strokeWidth="0.6" strokeLinecap="round" opacity="0.6" />
+      {/* Edge tendril for seamless tiling */}
+      <path d={edgeD} fill="none" stroke={stroke} strokeWidth="0.7" strokeLinecap="round" opacity="0.5" />
+      {/* Leaves at branch points */}
+      <path d={leaf1} fill={stroke} stroke="none" opacity="0.25" />
+      <path d={leaf2} fill={stroke} stroke="none" opacity="0.20" />
+      <path d={leaf3} fill={stroke} stroke="none" opacity="0.15" />
+      {/* Junction dots */}
+      <circle cx={bx1.toFixed(1)} cy={by1.toFixed(1)} r="1.5" fill={stroke} opacity="0.3" />
+      <circle cx={bx2.toFixed(1)} cy={by2.toFixed(1)} r="1.2" fill={stroke} opacity="0.25" />
+      <circle cx={bx3.toFixed(1)} cy={by3.toFixed(1)} r="1" fill={stroke} opacity="0.2" />
     </>
   );
 }
@@ -215,8 +307,8 @@ const PATTERN_DEFS: Record<PatternType, PatternDef> = {
     anim: "breathe",
   },
   karakusa: {
-    viewBox: "0 0 100 90",
-    w: 100, h: 90,
+    viewBox: "-10 -10 120 120",
+    w: 100, h: 100,
     render: (stroke) => <KarakusaPaths stroke={stroke} />,
     anim: "drift-xy",
   },

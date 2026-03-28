@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { BasicInfo } from "./sections/basic-info";
 import { RedirectOptions } from "./sections/redirect-options";
 import { EditorTabPanel } from "./editor-tab-panel";
@@ -29,10 +30,13 @@ interface LinkEditorProps {
   initial?: Partial<LinkEditorData>;
   onSave: (data: LinkEditorData) => Promise<void>;
   saveLabel?: string;
+  /** Called whenever the editor dirty state changes (for parent navigation guards) */
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps) {
+export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: LinkEditorProps) {
   const t = useTranslations("editor");
+  const tc = useTranslations("common");
   const isLinkhub = mode === "linkhub";
 
   // ── Shared state ──────────────────────────────────────────────────────────
@@ -40,6 +44,7 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
   const [title, setTitle] = useState(initial?.title ?? initial?.landingData?.title ?? "");
   const [redirectDelay, setRedirectDelay] = useState(initial?.redirectDelay ?? 0);
   const [saving, setSaving] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
   // ── Linkhub-only state ────────────────────────────────────────────────────
   const [bio, setBio] = useState(initial?.landingData?.bio ?? "");
@@ -58,6 +63,25 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
   const [mobileView, setMobileView] = useState<"editor" | "preview">("editor");
   const [activeTab, setActiveTab] = useState<EditorTab>("profile");
 
+  // ── Dirty tracking ──────────────────────────────────────────────────────
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    // Skip the initial render — only mark dirty after user interactions
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    setDirty(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [targetUrl, title, redirectDelay, bio, avatar, links, theme, buttonStyle]);
+
+  // Notify parent of dirty state changes
+  useEffect(() => { onDirtyChange?.(dirty); }, [dirty, onDirtyChange]);
+
+  // Unsaved changes guard
+  useUnsavedChanges(dirty, tc("unsavedChanges"));
+
   // ── Computed landing data (live preview) ──────────────────────────────────
   const landingData: LandingData = {
     title,
@@ -71,6 +95,8 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
           bgColor: theme.bgColor,
           bgPattern: theme.bgPattern,
           patternOpacity: theme.patternOpacity,
+          patternAnimated: theme.patternAnimated,
+          cardColor: theme.cardColor,
           buttonStyle,
           buttonBorderColor: theme.buttonBorderColor,
         }
@@ -87,6 +113,7 @@ export function LinkEditor({ mode, initial, onSave, saveLabel }: LinkEditorProps
         redirectDelay: mode === "redirect" ? redirectDelay : 0,
         landingData,
       });
+      setDirty(false);
     } finally {
       setSaving(false);
     }

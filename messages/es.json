@@ -113,7 +113,8 @@
     "reportSuccess": "Reporte enviado. Gracias.",
     "linkDisabled": "Contenido no disponible.",
     "rateLimited": "Demasiadas solicitudes. Intenta de nuevo en {seconds} segundos.",
-    "unauthorized": "No autorizado."
+    "unauthorized": "No autorizado.",
+    "unsavedChanges": "Tienes cambios sin guardar. ¿Quieres salir?"
   },
   "notFound": {
     "title": "Página no encontrada",
@@ -175,11 +176,14 @@
     "bgSolid": "Sólido",
     "bgPattern": "Patrón",
     "patternOpacity": "Intensidad del patrón",
+    "patternAnimated": "Animar patrón",
     "noPattern": "Sin patrón",
     "noLinksEmpty": "Aún no hay enlaces. ¡Añade el primero!",
     "viewportMobile": "Móvil",
     "viewportDesktop": "Escritorio",
-    "buttonBorderColor": "Color de borde"
+    "buttonBorderColor": "Color de borde",
+    "cardColor": "Tarjeta de contenido",
+    "noCard": "Sin tarjeta"
   },
   "countdown": {
     "by": "por",

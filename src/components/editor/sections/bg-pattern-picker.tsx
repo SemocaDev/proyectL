@@ -10,9 +10,13 @@ interface BgPatternPickerProps {
   bgColor: string;                          // color de fondo activo (hex)
   bgPattern: BgPattern;
   patternOpacity: number;
+  patternAnimated: boolean;
+  cardColor: string | undefined;            // color de la tarjeta de contenido (undefined = sin tarjeta)
   onBgColorChange: (hex: string) => void;
   onBgPatternChange: (v: BgPattern) => void;
   onPatternOpacityChange: (v: number) => void;
+  onPatternAnimatedChange: (v: boolean) => void;
+  onCardColorChange: (v: string | undefined) => void;
 }
 
 // ── Paleta de colores predefinidos (16 + libre) ───────────────────────────────
@@ -70,13 +74,24 @@ function isDarkColor(hex: string): boolean {
 
 // ── Componente ────────────────────────────────────────────────────────────────
 
+const CARD_COLOR_PRESETS: { hex: string; label: string; dark: boolean }[] = [
+  { hex: "#FFFFFF",  label: "Blanco", dark: false },
+  { hex: "#FAF7F2",  label: "Crema",  dark: false },
+  { hex: "#1a1a1a",  label: "Oscuro", dark: true  },
+  { hex: "#F1F5F9",  label: "Gris",   dark: false },
+];
+
 export function BgPatternPicker({
   bgColor,
   bgPattern,
   patternOpacity,
+  patternAnimated,
+  cardColor,
   onBgColorChange,
   onBgPatternChange,
   onPatternOpacityChange,
+  onPatternAnimatedChange,
+  onCardColorChange,
 }: BgPatternPickerProps) {
   const t = useTranslations("editor");
   const patternColor = isDarkColor(bgColor) ? "#ffffff" : "#111827";
@@ -217,6 +232,99 @@ export function BgPatternPicker({
           </div>
         </div>
       )}
+
+      {/* ── Toggle animación del patrón ── */}
+      {bgPattern !== "none" && (
+        <label className="flex cursor-pointer items-center justify-between">
+          <span className="text-xs text-ginnezumi">{t("patternAnimated")}</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={patternAnimated}
+            onClick={() => onPatternAnimatedChange(!patternAnimated)}
+            className={`relative h-6 w-11 rounded-full transition-colors ${
+              patternAnimated ? "bg-beni" : "bg-hai"
+            }`}
+          >
+            <span
+              className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+                patternAnimated ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </label>
+      )}
+
+      {/* ── Tarjeta de contenido ── */}
+      <div className="space-y-2.5">
+        <p className="text-xs text-ginnezumi">{t("cardColor")}</p>
+        <div className="flex flex-wrap gap-2">
+          {/* Sin tarjeta */}
+          <button
+            type="button"
+            onClick={() => onCardColorChange(undefined)}
+            className={`flex h-9 w-9 items-center justify-center rounded-lg border-2 transition-all hover:scale-105 ${
+              !cardColor
+                ? "border-beni ring-1 ring-beni ring-offset-1 scale-105"
+                : "border-dashed border-ginnezumi/30 hover:border-ginnezumi/50"
+            }`}
+          >
+            <span className="text-xs text-ginnezumi/40">✕</span>
+          </button>
+
+          {CARD_COLOR_PRESETS.map((preset) => {
+            const isSelected = cardColor === preset.hex;
+            return (
+              <button
+                key={preset.hex}
+                type="button"
+                title={preset.label}
+                onClick={() => onCardColorChange(preset.hex)}
+                className={`relative h-9 w-9 rounded-lg border-2 shadow-sm transition-all hover:scale-105 ${
+                  isSelected
+                    ? "border-beni ring-1 ring-beni ring-offset-1 scale-105"
+                    : "border-transparent hover:border-ginnezumi/20"
+                }`}
+                style={{ backgroundColor: preset.hex }}
+              >
+                {isSelected && (
+                  <span
+                    className="absolute inset-0 flex items-center justify-center text-xs"
+                    style={{ color: preset.dark ? "#ffffff" : "#111827" }}
+                  >
+                    ✓
+                  </span>
+                )}
+              </button>
+            );
+          })}
+
+          {/* Color personalizado */}
+          <label
+            title="Color personalizado"
+            className={`relative flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border-2 transition-all hover:scale-105 ${
+              cardColor && !CARD_COLOR_PRESETS.some((p) => p.hex === cardColor)
+                ? "border-beni ring-1 ring-beni ring-offset-1 scale-105"
+                : "border-dashed border-ginnezumi/30 hover:border-ginnezumi/50"
+            }`}
+            style={
+              cardColor && !CARD_COLOR_PRESETS.some((p) => p.hex === cardColor)
+                ? { backgroundColor: cardColor }
+                : undefined
+            }
+          >
+            <input
+              type="color"
+              value={cardColor ?? "#FFFFFF"}
+              onChange={(e) => onCardColorChange(e.target.value)}
+              className="sr-only"
+            />
+            {(!cardColor || CARD_COLOR_PRESETS.some((p) => p.hex === cardColor)) && (
+              <span className="text-base leading-none text-ginnezumi/40">+</span>
+            )}
+          </label>
+        </div>
+      </div>
     </div>
   );
 }

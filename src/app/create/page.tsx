@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { createLink } from "@/actions/link-actions";
 import { toast } from "sonner";
 import { Navbar } from "@/components/navbar";
@@ -21,10 +22,21 @@ function CreateWizard() {
 
   const initialUrl = searchParams.get("url") ?? "";
 
+  const tc = useTranslations("common");
+
   const [step, setStep] = useState<Step>(1);
   const [mode, setMode] = useState<Mode>("redirect");
   const [result, setResult] = useState<{ shortUrl: string; shortCode: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [editorDirty, setEditorDirty] = useState(false);
+
+  // Guard: protect against accidental navigation when editing (step 2)
+  const isEditing = step === 2 && editorDirty;
+  const { confirmLeave } = useUnsavedChanges(isEditing, tc("unsavedChanges"));
+
+  const handleBack = useCallback(() => {
+    if (confirmLeave()) setStep(1);
+  }, [confirmLeave]);
 
   async function handleEditorSave(data: LinkEditorData) {
     // Validate URL
@@ -82,7 +94,7 @@ function CreateWizard() {
           <div className="border-b border-hai/30 px-4 py-3 sm:px-6">
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setStep(1)}
+                onClick={handleBack}
                 className="rounded-md border border-hai px-3 py-1.5 text-xs text-ginnezumi transition-colors hover:border-sumi hover:text-sumi"
               >
                 {t("back")}
@@ -98,6 +110,7 @@ function CreateWizard() {
             initial={{ targetUrl: initialUrl }}
             onSave={handleEditorSave}
             saveLabel={t("create")}
+            onDirtyChange={setEditorDirty}
           />
         </div>
       )}

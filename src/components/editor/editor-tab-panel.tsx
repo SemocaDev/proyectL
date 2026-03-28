@@ -195,9 +195,13 @@ export function EditorTabPanel({
                 )}
                 bgPattern={theme.bgPattern ?? "none"}
                 patternOpacity={theme.patternOpacity ?? 0.06}
+                patternAnimated={theme.patternAnimated ?? false}
+                cardColor={theme.cardColor}
                 onBgColorChange={(hex) => onThemeChange({ ...theme, bgColor: hex })}
                 onBgPatternChange={(v) => onThemeChange({ ...theme, bgPattern: v })}
                 onPatternOpacityChange={(v) => onThemeChange({ ...theme, patternOpacity: v })}
+                onPatternAnimatedChange={(v) => onThemeChange({ ...theme, patternAnimated: v })}
+                onCardColorChange={(v) => onThemeChange({ ...theme, cardColor: v })}
               />
             </div>
 

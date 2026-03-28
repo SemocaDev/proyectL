@@ -36,7 +36,9 @@ export const themeSchema = z.object({
   buttonStyle: buttonStyleSchema.optional(),
   buttonBorderColor: z.string().optional(), // color de borde de botones outline
   bgPattern: z.enum(BG_PATTERN_VALUES).optional(),
-  patternOpacity: z.number().min(0.02).max(0.15).optional(),
+  patternOpacity: z.number().min(0.02).max(0.20).optional(),
+  patternAnimated: z.boolean().optional(),
+  cardColor: z.string().optional(), // hex color for the content card (null = no card)
 });
 
 export const landingDataSchema = z.object({

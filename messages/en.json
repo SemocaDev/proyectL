@@ -113,7 +113,8 @@
     "reportSuccess": "Report submitted. Thank you.",
     "linkDisabled": "Content not available.",
     "rateLimited": "Too many requests. Try again in {seconds} seconds.",
-    "unauthorized": "Unauthorized."
+    "unauthorized": "Unauthorized.",
+    "unsavedChanges": "You have unsaved changes. Leave anyway?"
   },
   "notFound": {
     "title": "Page not found",
@@ -175,11 +176,14 @@
     "bgSolid": "Solid",
     "bgPattern": "Pattern",
     "patternOpacity": "Pattern intensity",
+    "patternAnimated": "Animate pattern",
     "noPattern": "No pattern",
     "noLinksEmpty": "No links yet. Add your first one!",
     "viewportMobile": "Mobile",
     "viewportDesktop": "Desktop",
-    "buttonBorderColor": "Border color"
+    "buttonBorderColor": "Border color",
+    "cardColor": "Content card",
+    "noCard": "No card"
   },
   "countdown": {
     "by": "by",

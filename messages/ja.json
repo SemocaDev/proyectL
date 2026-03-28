@@ -113,7 +113,8 @@
     "reportSuccess": "報告を送信しました。ありがとうございます。",
     "linkDisabled": "コンテンツは利用できません。",
     "rateLimited": "リクエストが多すぎます。{seconds}秒後に再試行してください。",
-    "unauthorized": "アクセス権がありません。"
+    "unauthorized": "アクセス権がありません。",
+    "unsavedChanges": "保存されていない変更があります。ページを離れますか？"
   },
   "notFound": {
     "title": "ページが見つかりません",
@@ -175,11 +176,14 @@
     "bgSolid": "単色",
     "bgPattern": "パターン",
     "patternOpacity": "パターンの濃さ",
+    "patternAnimated": "パターンをアニメーション",
     "noPattern": "なし",
     "noLinksEmpty": "まだリンクがありません。最初のリンクを追加しましょう！",
     "viewportMobile": "モバイル",
     "viewportDesktop": "デスクトップ",
-    "buttonBorderColor": "ボーダーカラー"
+    "buttonBorderColor": "ボーダーカラー",
+    "cardColor": "コンテンツカード",
+    "noCard": "カードなし"
   },
   "countdown": {
     "by": "提供：",
