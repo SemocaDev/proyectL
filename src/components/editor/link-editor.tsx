@@ -205,9 +205,9 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
     <div className="flex min-h-0 flex-1 flex-col lg:flex-row lg:overflow-hidden">
 
       {/* ── MOBILE: editor view ── */}
-      <div className={`flex flex-1 flex-col lg:hidden ${mobileView === "preview" ? "hidden" : ""}`}>
-        <div className="flex-1 overflow-y-auto" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom)))" }}>
-          <EditorTabPanel {...tabPanelProps} />
+      <div className={`flex min-h-0 flex-1 flex-col lg:hidden ${mobileView === "preview" ? "hidden" : ""}`}>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom)))" }}>
+          <EditorTabPanel {...tabPanelProps} hideTabBar />
           <div className="px-4 pb-4 pt-2">
             {saveBtn}
           </div>

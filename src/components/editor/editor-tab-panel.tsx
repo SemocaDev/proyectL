@@ -13,6 +13,8 @@ export type EditorTab = "profile" | "links" | "design";
 interface EditorTabPanelProps {
   activeTab: EditorTab;
   onTabChange: (tab: EditorTab) => void;
+  /** Hide the top tab bar (used on mobile where MobileTabBar handles navigation) */
+  hideTabBar?: boolean;
   // Data
   title: string;
   bio: string;
@@ -110,6 +112,7 @@ function ColorControl({
 export function EditorTabPanel({
   activeTab,
   onTabChange,
+  hideTabBar,
   title,
   bio,
   avatar,
@@ -131,24 +134,26 @@ export function EditorTabPanel({
 
   return (
     <div className="flex flex-col">
-      {/* ── Sticky tab bar ── */}
-      <div className="sticky top-0 z-10 flex border-b border-hai/40 bg-white">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => onTabChange(tab.id)}
-            className={`flex flex-1 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-xs ${
-              activeTab === tab.id
-                ? "border-b-2 border-beni text-beni"
-                : "text-ginnezumi/60 hover:text-sumi"
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* ── Sticky tab bar (hidden on mobile where MobileTabBar is used) ── */}
+      {!hideTabBar && (
+        <div className="sticky top-0 z-10 flex border-b border-hai/40 bg-white">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => onTabChange(tab.id)}
+              className={`flex flex-1 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-xs ${
+                activeTab === tab.id
+                  ? "border-b-2 border-beni text-beni"
+                  : "text-ginnezumi/60 hover:text-sumi"
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ── Tab content ── */}
       <div className="px-4 py-5 sm:px-5">
