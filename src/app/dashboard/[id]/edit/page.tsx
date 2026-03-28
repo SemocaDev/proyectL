@@ -76,7 +76,7 @@ export default function EditLinkPage() {
   const landingData = (link.landingData as LandingData) ?? {};
 
   return (
-    <div className="flex min-h-screen flex-col bg-shironeri">
+    <div className="flex h-screen flex-col overflow-hidden bg-shironeri">
       <Navbar />
 
       {/* Header */}

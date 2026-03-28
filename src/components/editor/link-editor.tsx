@@ -202,7 +202,7 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
   };
 
   return (
-    <div className="flex flex-1 flex-col lg:flex-row lg:overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col lg:flex-row lg:overflow-hidden">
 
       {/* ── MOBILE: editor view ── */}
       <div className={`flex flex-1 flex-col lg:hidden ${mobileView === "preview" ? "hidden" : ""}`}>

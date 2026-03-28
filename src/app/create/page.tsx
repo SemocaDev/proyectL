@@ -85,12 +85,12 @@ function CreateWizard() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-shironeri">
+    <div className={`flex flex-col bg-shironeri ${step === 2 ? "h-screen overflow-hidden" : "min-h-screen"}`}>
       <Navbar />
 
       {/* Paso 2 — Editor (full width for linkhub preview) */}
       {step === 2 && (
-        <div className="flex flex-1 flex-col">
+        <div className="flex min-h-0 flex-1 flex-col">
           {/* Back button + title */}
           <div className="border-b border-hai/30 px-4 py-3 sm:px-6">
             <div className="flex items-center gap-3">
