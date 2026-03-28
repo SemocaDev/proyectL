@@ -85,7 +85,7 @@ function CreateWizard() {
   }
 
   return (
-    <div className={`flex flex-col bg-shironeri ${step === 2 ? "h-screen overflow-hidden" : "min-h-screen"}`}>
+    <div className={`flex flex-col bg-shironeri ${step === 2 ? "h-dvh overflow-hidden" : "min-h-dvh"}`}>
       <Navbar />
 
       {/* Paso 2 — Editor (full width for linkhub preview) */}
