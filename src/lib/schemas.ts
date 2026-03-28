@@ -54,7 +54,7 @@ export const landingDataSchema = z.object({
 // ─── Link CRUD schemas ──────────────────────────────────────────────────────
 
 export const createLinkSchema = z.object({
-  targetUrl: z.url().max(2048),
+  targetUrl: z.string().max(2048),   // validated as URL in server action for redirect mode
   mode: z.enum(["redirect", "linkhub"]),
   title: z.string().max(100).optional(),
   redirectDelay: z.number().int().min(0).max(10).optional(),
@@ -62,7 +62,7 @@ export const createLinkSchema = z.object({
 });
 
 export const updateLinkSchema = z.object({
-  targetUrl: z.url().max(2048).optional(),
+  targetUrl: z.string().max(2048).optional(),
   mode: z.enum(["redirect", "linkhub"]).optional(),
   title: z.string().max(100).optional(),
   redirectDelay: z.number().int().min(0).max(10).nullable().optional(),

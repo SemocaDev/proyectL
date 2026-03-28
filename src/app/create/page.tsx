@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { createLink } from "@/actions/link-actions";
+import { stripUndefined } from "@/lib/clean-data";
 import { toast } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { WagaraPattern } from "@/components/patterns";
@@ -57,13 +58,13 @@ function CreateWizard() {
       }
     }
 
-    const res = await createLink({
+    const res = await createLink(stripUndefined({
       targetUrl: data.targetUrl,
       mode: data.mode,
       title: data.title || undefined,
       redirectDelay: data.redirectDelay || undefined,
       landingData: data.mode === "linkhub" ? data.landingData : undefined,
-    });
+    }));
 
     if (res.error) {
       toast.error(res.error);

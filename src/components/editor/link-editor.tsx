@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
+import { stripUndefined } from "@/lib/clean-data";
 import { BasicInfo } from "./sections/basic-info";
 import { RedirectOptions } from "./sections/redirect-options";
 import { EditorTabPanel } from "./editor-tab-panel";
@@ -108,13 +109,38 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
   async function handleSave() {
     setSaving(true);
     try {
-      await onSave({
+      // Filter out incomplete links (missing URL) and strip undefined values
+      // to prevent Next.js "$undefined" serialization issues in production
+      const cleanLinks = links.filter((l) => l.url && l.url.trim() !== "");
+      const cleanLandingData: LandingData = stripUndefined({
+        title,
+        bio: isLinkhub ? bio : undefined,
+        avatar: isLinkhub ? avatar : undefined,
+        links: isLinkhub ? cleanLinks : undefined,
+        theme: isLinkhub
+          ? {
+              accentColor: theme.accentColor,
+              bgTheme: theme.bgTheme,
+              bgColor: theme.bgColor,
+              bgPattern: theme.bgPattern,
+              patternOpacity: theme.patternOpacity,
+              patternAnimated: theme.patternAnimated,
+              cardColor: theme.cardColor,
+              buttonStyle,
+              buttonBorderColor: theme.buttonBorderColor,
+              buttonBgColor: theme.buttonBgColor,
+              buttonTextColor: theme.buttonTextColor,
+            }
+          : undefined,
+      });
+
+      await onSave(stripUndefined({
         targetUrl,
         title,
         mode,
         redirectDelay: mode === "redirect" ? redirectDelay : 0,
-        landingData,
-      });
+        landingData: cleanLandingData,
+      }));
       setDirty(false);
     } finally {
       setSaving(false);

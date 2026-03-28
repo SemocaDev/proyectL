@@ -22,7 +22,26 @@ export async function createLink(input: {
   if (!session?.user) return { error: "Unauthorized" };
 
   const parsed = createLinkSchema.safeParse(input);
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) {
+    // Extract first meaningful error for user feedback
+    const firstIssue = parsed.error.issues[0];
+    const path = firstIssue?.path?.join(".") ?? "";
+    const msg = firstIssue?.message ?? "Invalid input";
+    return { error: path ? `${path}: ${msg}` : msg };
+  }
+
+  // Validate targetUrl as URL for redirect mode
+  if (parsed.data.mode === "redirect") {
+    if (!parsed.data.targetUrl.trim()) return { error: "URL is required" };
+    try {
+      const u = new URL(parsed.data.targetUrl);
+      if (u.protocol !== "http:" && u.protocol !== "https:") {
+        return { error: "URL must start with http:// or https://" };
+      }
+    } catch {
+      return { error: "Invalid URL format" };
+    }
+  }
 
   const headerStore = await headers();
   const ip =
@@ -79,7 +98,24 @@ export async function updateLink(
   await verifyLinkOwnership(linkId);
 
   const parsed = updateLinkSchema.safeParse(data);
-  if (!parsed.success) return { error: "Invalid input" };
+  if (!parsed.success) {
+    const firstIssue = parsed.error.issues[0];
+    const path = firstIssue?.path?.join(".") ?? "";
+    const msg = firstIssue?.message ?? "Invalid input";
+    return { error: path ? `${path}: ${msg}` : msg };
+  }
+
+  // Validate targetUrl if provided
+  if (parsed.data.targetUrl) {
+    try {
+      const u = new URL(parsed.data.targetUrl);
+      if (u.protocol !== "http:" && u.protocol !== "https:") {
+        return { error: "URL must start with http:// or https://" };
+      }
+    } catch {
+      return { error: "Invalid URL format" };
+    }
+  }
 
   await db
     .update(shortLinks)

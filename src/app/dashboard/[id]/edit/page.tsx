@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import { getLinkById, updateLink } from "@/actions/link-actions";
+import { stripUndefined } from "@/lib/clean-data";
 import { toast } from "sonner";
 import { Navbar } from "@/components/navbar";
 import { LinkEditor, type LinkEditorData } from "@/components/editor/link-editor";
@@ -44,12 +45,12 @@ export default function EditLinkPage() {
   }, [params.id, router]);
 
   async function handleSave(data: LinkEditorData) {
-    const res = await updateLink(params.id, {
+    const res = await updateLink(params.id, stripUndefined({
       targetUrl: data.targetUrl,
       title: data.title || undefined,
       redirectDelay: data.mode === "redirect" ? data.redirectDelay : null,
       landingData: data.mode === "linkhub" ? data.landingData : undefined,
-    });
+    }));
 
     if (res.error) {
       toast.error(t("saveFailed"));
