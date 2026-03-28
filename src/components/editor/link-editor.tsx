@@ -206,11 +206,16 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
 
       {/* ── MOBILE: editor view ── */}
       <div className={`flex min-h-0 flex-1 flex-col lg:hidden ${mobileView === "preview" ? "hidden" : ""}`}>
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" style={{ paddingBottom: "calc(64px + max(8px, env(safe-area-inset-bottom)))" }}>
+        {/* Scrollable content — bottom padding reserves space for save button + tab bar */}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" style={{ paddingBottom: "calc(52px + 64px + max(8px, env(safe-area-inset-bottom)))" }}>
           <EditorTabPanel {...tabPanelProps} hideTabBar />
-          <div className="px-4 pb-4 pt-2">
-            {saveBtn}
-          </div>
+        </div>
+        {/* Save button fixed above the mobile tab bar */}
+        <div
+          className="fixed left-0 right-0 z-30 border-t border-hai/20 bg-white/95 px-4 py-2 backdrop-blur-sm"
+          style={{ bottom: "calc(52px + max(8px, env(safe-area-inset-bottom)))" }}
+        >
+          {saveBtn}
         </div>
       </div>
 
