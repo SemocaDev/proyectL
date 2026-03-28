@@ -58,7 +58,14 @@ export function proxy(request: NextRequest) {
 
   // 2. App routes — let Next.js handle them normally
   if (APP_ROUTES.has(firstSegment)) {
-    // 2a. Protected routes → verify session cookie (optimistic check)
+    // 2a. Auth API routes — pass through without header modification
+    //     Modifying headers on /api/auth/* can interfere with NextAuth
+    //     cookie handling (state, CSRF, PKCE) causing InvalidCheck errors.
+    if (firstSegment === "api" && pathname.startsWith("/api/auth")) {
+      return NextResponse.next();
+    }
+
+    // 2b. Protected routes → verify session cookie (optimistic check)
     const isProtected =
       firstSegment === "dashboard" ||
       firstSegment === "admin" ||
