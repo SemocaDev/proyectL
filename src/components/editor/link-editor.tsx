@@ -99,6 +99,8 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
           cardColor: theme.cardColor,
           buttonStyle,
           buttonBorderColor: theme.buttonBorderColor,
+          buttonBgColor: theme.buttonBgColor,
+          buttonTextColor: theme.buttonTextColor,
         }
       : undefined,
   };

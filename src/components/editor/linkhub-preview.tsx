@@ -48,8 +48,10 @@ const BG_THEME_HEX: Record<string, string> = {
 export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
   const t = useTranslations("linkhub");
 
-  const accent   = data.theme?.accentColor ?? colors.beni;
+  const accent         = data.theme?.accentColor ?? colors.beni;
   const btnBorderColor = data.theme?.buttonBorderColor ?? null;
+  const btnBgColor     = data.theme?.buttonBgColor ?? null;
+  const btnTextColor   = data.theme?.buttonTextColor ?? null;
   const bgPattern      = data.theme?.bgPattern;
   const patternOpacity = data.theme?.patternOpacity ?? 0.06;
   const cardColor      = data.theme?.cardColor ?? null;
@@ -112,13 +114,18 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
             const IconComp   = item.icon ? PLATFORM_ICONS[item.icon]?.svg : null;
             const isHigh     = !!item.highlighted;
 
-            let inlineStyle: React.CSSProperties | undefined;
+            // Build inline styles based on custom button colors
+            const btnStyle: React.CSSProperties = {};
             if (isHigh) {
-              inlineStyle = { backgroundColor: accent };
-            } else if (isFilled) {
-              inlineStyle = { borderLeftColor: accent, borderLeftWidth: "3px" };
-            } else if (btnBorderColor) {
-              inlineStyle = { borderColor: btnBorderColor };
+              btnStyle.backgroundColor = accent;
+            } else {
+              if (btnBgColor) btnStyle.backgroundColor = btnBgColor;
+              else if (isFilled) {
+                btnStyle.borderLeftColor = accent;
+                btnStyle.borderLeftWidth = "3px";
+              }
+              if (btnBorderColor) btnStyle.borderColor = btnBorderColor;
+              if (btnTextColor) btnStyle.color = btnTextColor;
             }
 
             return (
@@ -129,9 +136,11 @@ export function LinkhubPreview({ data, embedded }: LinkhubPreviewProps) {
                 rel={embedded ? "noopener noreferrer" : undefined}
                 onClick={embedded ? undefined : (e) => e.preventDefault()}
                 className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition-all active:scale-[0.98] ${
-                  isHigh ? `${shapeOnly} text-white` : `${btnClasses} ${textColor}`
+                  isHigh
+                    ? `${shapeOnly} text-white`
+                    : `${btnClasses} ${btnTextColor ? "" : textColor}`
                 }`}
-                style={inlineStyle}
+                style={Object.keys(btnStyle).length > 0 ? btnStyle : undefined}
               >
                 {IconComp && <IconComp className="h-4 w-4 shrink-0 opacity-60" />}
                 <span className="flex-1 text-center">{item.label || "—"}</span>

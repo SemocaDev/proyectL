@@ -34,7 +34,9 @@ export const themeSchema = z.object({
   bgTheme: z.enum(["light", "cream", "dark"]).optional(),
   bgColor: z.string().optional(),        // color libre de fondo (hex), toma prioridad sobre bgTheme
   buttonStyle: buttonStyleSchema.optional(),
-  buttonBorderColor: z.string().optional(), // color de borde de botones outline
+  buttonBorderColor: z.string().optional(), // color de borde de botones
+  buttonBgColor: z.string().optional(),     // color de fondo de botones
+  buttonTextColor: z.string().optional(),   // color de texto de botones
   bgPattern: z.enum(BG_PATTERN_VALUES).optional(),
   patternOpacity: z.number().min(0.02).max(0.20).optional(),
   patternAnimated: z.boolean().optional(),

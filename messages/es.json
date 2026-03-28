@@ -181,7 +181,11 @@
     "noLinksEmpty": "Aún no hay enlaces. ¡Añade el primero!",
     "viewportMobile": "Móvil",
     "viewportDesktop": "Escritorio",
-    "buttonBorderColor": "Color de borde",
+    "buttonBorderColor": "Borde",
+    "buttonBgColor": "Relleno",
+    "buttonTextColor": "Texto",
+    "buttonColors": "Colores de botón",
+    "resetColor": "Restablecer",
     "cardColor": "Tarjeta de contenido",
     "noCard": "Sin tarjeta"
   },

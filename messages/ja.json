@@ -181,7 +181,11 @@
     "noLinksEmpty": "まだリンクがありません。最初のリンクを追加しましょう！",
     "viewportMobile": "モバイル",
     "viewportDesktop": "デスクトップ",
-    "buttonBorderColor": "ボーダーカラー",
+    "buttonBorderColor": "ボーダー",
+    "buttonBgColor": "塗りつぶし",
+    "buttonTextColor": "テキスト",
+    "buttonColors": "ボタンカラー",
+    "resetColor": "リセット",
     "cardColor": "コンテンツカード",
     "noCard": "カードなし"
   },

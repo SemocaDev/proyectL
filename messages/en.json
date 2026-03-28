@@ -181,7 +181,11 @@
     "noLinksEmpty": "No links yet. Add your first one!",
     "viewportMobile": "Mobile",
     "viewportDesktop": "Desktop",
-    "buttonBorderColor": "Border color",
+    "buttonBorderColor": "Border",
+    "buttonBgColor": "Fill",
+    "buttonTextColor": "Text",
+    "buttonColors": "Button colors",
+    "resetColor": "Reset",
     "cardColor": "Content card",
     "noCard": "No card"
   },

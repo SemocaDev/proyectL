@@ -64,6 +64,47 @@ function IconDesign() {
   );
 }
 
+// ── Color picker control ────────────────────────────────────────────────────
+
+function ColorControl({
+  label,
+  value,
+  fallback,
+  onChange,
+  onReset,
+}: {
+  label: string;
+  value: string | undefined;
+  fallback: string;
+  onChange: (v: string) => void;
+  onReset: () => void;
+}) {
+  const active = value ?? fallback;
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <label className="relative flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden rounded-xl border-2 border-hai transition-all hover:border-ginnezumi/40 hover:scale-105">
+        <input
+          type="color"
+          value={active}
+          onChange={(e) => onChange(e.target.value)}
+          className="sr-only"
+        />
+        <div className="h-full w-full" style={{ backgroundColor: active }} />
+      </label>
+      <span className="text-[10px] text-ginnezumi/60">{label}</span>
+      {value && (
+        <button
+          type="button"
+          onClick={onReset}
+          className="text-[9px] text-ginnezumi/40 hover:text-shu transition-colors"
+        >
+          ✕
+        </button>
+      )}
+    </div>
+  );
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function EditorTabPanel({
@@ -214,39 +255,39 @@ export function EditorTabPanel({
                 style={theme.buttonStyle ?? { shape: "rounded", variant: "filled" }}
                 onChange={(bs) => onThemeChange({ ...theme, buttonStyle: bs })}
               />
-              {/* Color de borde — solo visible en variante outline */}
-              {(theme.buttonStyle?.variant === "outline" || !theme.buttonStyle) && (
-                <div className="flex items-center gap-3 pt-1">
-                  <label className="text-xs text-ginnezumi/70">{t("buttonBorderColor")}</label>
-                  <div className="flex items-center gap-2">
-                    <label className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-lg border-2 border-hai transition-all hover:border-ginnezumi/40">
-                      <input
-                        type="color"
-                        value={theme.buttonBorderColor ?? theme.accentColor ?? colors.beni}
-                        onChange={(e) => onThemeChange({ ...theme, buttonBorderColor: e.target.value })}
-                        className="sr-only"
-                      />
-                      <div
-                        className="h-full w-full"
-                        style={{ backgroundColor: theme.buttonBorderColor ?? theme.accentColor ?? colors.beni }}
-                      />
-                    </label>
-                    <span className="font-mono text-[11px] text-ginnezumi/50 uppercase">
-                      {theme.buttonBorderColor ?? theme.accentColor ?? colors.beni}
-                    </span>
-                    {theme.buttonBorderColor && (
-                      <button
-                        type="button"
-                        onClick={() => onThemeChange({ ...theme, buttonBorderColor: undefined })}
-                        className="text-[10px] text-ginnezumi/40 hover:text-shu transition-colors"
-                        title="Restablecer"
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
+            </div>
+
+            {/* Colores de botón */}
+            <div className="space-y-3">
+              <p className="text-xs font-medium uppercase tracking-wider text-ginnezumi">
+                {t("buttonColors")}
+              </p>
+              <div className="grid grid-cols-3 gap-3">
+                {/* Relleno */}
+                <ColorControl
+                  label={t("buttonBgColor")}
+                  value={theme.buttonBgColor}
+                  fallback={theme.accentColor ?? colors.beni}
+                  onChange={(v) => onThemeChange({ ...theme, buttonBgColor: v })}
+                  onReset={() => onThemeChange({ ...theme, buttonBgColor: undefined })}
+                />
+                {/* Texto */}
+                <ColorControl
+                  label={t("buttonTextColor")}
+                  value={theme.buttonTextColor}
+                  fallback="#FFFFFF"
+                  onChange={(v) => onThemeChange({ ...theme, buttonTextColor: v })}
+                  onReset={() => onThemeChange({ ...theme, buttonTextColor: undefined })}
+                />
+                {/* Borde */}
+                <ColorControl
+                  label={t("buttonBorderColor")}
+                  value={theme.buttonBorderColor}
+                  fallback={theme.accentColor ?? colors.beni}
+                  onChange={(v) => onThemeChange({ ...theme, buttonBorderColor: v })}
+                  onReset={() => onThemeChange({ ...theme, buttonBorderColor: undefined })}
+                />
+              </div>
             </div>
 
           </div>
