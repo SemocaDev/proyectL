@@ -7,6 +7,8 @@ interface RedirectOptionsProps {
   onDelayChange: (v: number) => void;
 }
 
+const DELAY_OPTIONS = [0, 3, 5, 7, 10] as const;
+
 export function RedirectOptions({ delay, onDelayChange }: RedirectOptionsProps) {
   const t = useTranslations("editor");
 
@@ -17,24 +19,22 @@ export function RedirectOptions({ delay, onDelayChange }: RedirectOptionsProps) 
       </h3>
 
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <label className="text-xs text-ginnezumi">{t("countdownDelay")}</label>
-          <span className="text-xs font-medium text-sumi">
-            {delay === 0 ? t("instant") : `${delay}s`}
-          </span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={10}
-          step={1}
-          value={delay}
-          onChange={(e) => onDelayChange(Number(e.target.value))}
-          className="w-full accent-beni"
-        />
-        <div className="flex justify-between text-[10px] text-ginnezumi/50">
-          <span>{t("instant")}</span>
-          <span>10s</span>
+        <label className="text-xs text-ginnezumi">{t("countdownDelay")}</label>
+        <div className="flex gap-2">
+          {DELAY_OPTIONS.map((val) => (
+            <button
+              key={val}
+              type="button"
+              onClick={() => onDelayChange(val)}
+              className={`flex-1 rounded-lg border py-2 text-sm font-medium transition-all ${
+                delay === val
+                  ? "border-beni bg-beni/5 text-beni ring-1 ring-beni/40"
+                  : "border-hai bg-white text-ginnezumi hover:border-ginnezumi/40 hover:text-sumi"
+              }`}
+            >
+              {val === 0 ? t("instant") : `${val}s`}
+            </button>
+          ))}
         </div>
       </div>
 
