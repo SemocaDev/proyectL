@@ -112,6 +112,7 @@ function CreateWizard() {
             onSave={handleEditorSave}
             saveLabel={t("create")}
             onDirtyChange={setEditorDirty}
+            wizard={mode === "linkhub"}
           />
         </div>
       )}

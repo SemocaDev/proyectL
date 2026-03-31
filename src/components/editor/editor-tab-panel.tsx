@@ -15,6 +15,9 @@ interface EditorTabPanelProps {
   onTabChange: (tab: EditorTab) => void;
   /** Hide the top tab bar (used on mobile where MobileTabBar handles navigation) */
   hideTabBar?: boolean;
+  wizard?: boolean;
+  tabValidity?: Record<EditorTab, boolean>;
+  tabAttempted?: Set<EditorTab>;
   // Data
   title: string;
   bio: string;
@@ -113,6 +116,9 @@ export function EditorTabPanel({
   activeTab,
   onTabChange,
   hideTabBar,
+  wizard,
+  tabValidity,
+  tabAttempted,
   title,
   bio,
   avatar,
@@ -137,21 +143,40 @@ export function EditorTabPanel({
       {/* ── Sticky tab bar (hidden on mobile where MobileTabBar is used) ── */}
       {!hideTabBar && (
         <div className="sticky top-0 z-10 flex border-b border-hai/40 bg-white">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => onTabChange(tab.id)}
-              className={`flex flex-1 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-xs ${
-                activeTab === tab.id
-                  ? "border-b-2 border-beni text-beni"
-                  : "text-ginnezumi/60 hover:text-sumi"
-              }`}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            const valid    = tabValidity?.[tab.id] ?? true;
+            const tried    = tabAttempted?.has(tab.id) ?? false;
+            const isDesign = tab.id === "design";
+            const showOk  = wizard && (valid || isDesign) && (tried || isActive);
+            const showErr = wizard && !valid && !isDesign && tried;
+
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => onTabChange(tab.id)}
+                className={`relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] font-medium transition-colors sm:flex-row sm:justify-center sm:gap-2 sm:text-xs ${
+                  isActive
+                    ? "border-b-2 border-beni text-beni"
+                    : "text-ginnezumi/60 hover:text-sumi"
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+                {showOk && (
+                  <span className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-uguisu text-[9px] text-white">
+                    ✓
+                  </span>
+                )}
+                {showErr && (
+                  <span className="ml-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-shu text-[9px] text-white">
+                    !
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 

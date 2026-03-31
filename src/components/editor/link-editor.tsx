@@ -31,11 +31,21 @@ interface LinkEditorProps {
   initial?: Partial<LinkEditorData>;
   onSave: (data: LinkEditorData) => Promise<void>;
   saveLabel?: string;
-  /** Called whenever the editor dirty state changes (for parent navigation guards) */
   onDirtyChange?: (dirty: boolean) => void;
+  /** Step-by-step mode: Next button per tab, Save only on last tab */
+  wizard?: boolean;
 }
 
-export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: LinkEditorProps) {
+const TAB_ORDER: EditorTab[] = ["profile", "links", "design"];
+
+function isValidUrl(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch { return false; }
+}
+
+export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange, wizard = false }: LinkEditorProps) {
   const t = useTranslations("editor");
   const tc = useTranslations("common");
   const isLinkhub = mode === "linkhub";
@@ -60,30 +70,58 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
     initial?.landingData?.theme?.buttonStyle ?? { shape: "rounded", variant: "filled" }
   );
 
-  // ── Mobile navigation state ───────────────────────────────────────────────
+  // ── Mobile / tab navigation ───────────────────────────────────────────────
   const [mobileView, setMobileView] = useState<"editor" | "preview">("editor");
   const [activeTab, setActiveTab] = useState<EditorTab>("profile");
 
-  // ── Dirty tracking ──────────────────────────────────────────────────────
-  const mounted = useRef(false);
+  // ── Wizard: track which tabs the user has tried to advance from ───────────
+  const [attempted, setAttempted] = useState<Set<EditorTab>>(new Set());
 
+  // ── Dirty tracking ────────────────────────────────────────────────────────
+  const mounted = useRef(false);
   useEffect(() => {
-    // Skip the initial render — only mark dirty after user interactions
-    if (!mounted.current) {
-      mounted.current = true;
-      return;
-    }
+    if (!mounted.current) { mounted.current = true; return; }
     setDirty(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetUrl, title, redirectDelay, bio, avatar, links, theme, buttonStyle]);
 
-  // Notify parent of dirty state changes
   useEffect(() => { onDirtyChange?.(dirty); }, [dirty, onDirtyChange]);
-
-  // Unsaved changes guard
   useUnsavedChanges(dirty, tc("unsavedChanges"));
 
-  // ── Computed landing data (live preview) ──────────────────────────────────
+  // ── Validation ────────────────────────────────────────────────────────────
+  const profileValid = title.trim().length > 0;
+  const linksValid   = links.filter((l) => l.url.trim() && isValidUrl(l.url)).length > 0;
+
+  function errorForTab(tab: EditorTab): string | null {
+    if (tab === "profile" && !profileValid) return t("errorTitleRequired");
+    if (tab === "links"   && !linksValid)   return t("errorLinksRequired");
+    return null;
+  }
+
+  // ── Wizard step navigation ────────────────────────────────────────────────
+  function handleNext() {
+    setAttempted((prev) => new Set([...prev, activeTab]));
+    const err = errorForTab(activeTab);
+    if (err) return; // stays on current tab, error shown
+    const nextIndex = TAB_ORDER.indexOf(activeTab) + 1;
+    if (nextIndex < TAB_ORDER.length) setActiveTab(TAB_ORDER[nextIndex]);
+  }
+
+  function handleTabChange(tab: EditorTab) {
+    if (!wizard) { setActiveTab(tab); return; }
+    // In wizard mode allow going back freely, forward only if current step is valid
+    const currentIndex = TAB_ORDER.indexOf(activeTab);
+    const targetIndex  = TAB_ORDER.indexOf(tab);
+    if (targetIndex <= currentIndex) { setActiveTab(tab); return; }
+    // Mark all intermediate tabs as attempted before jumping forward
+    const newAttempted = new Set(attempted);
+    for (let i = currentIndex; i < targetIndex; i++) newAttempted.add(TAB_ORDER[i]);
+    setAttempted(newAttempted);
+    const firstInvalid = TAB_ORDER.slice(currentIndex, targetIndex).find((t) => errorForTab(t));
+    setActiveTab(firstInvalid ?? tab);
+  }
+
+  // ── Landing data ──────────────────────────────────────────────────────────
   const landingData: LandingData = {
     title,
     bio: isLinkhub ? bio : undefined,
@@ -106,11 +144,18 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
       : undefined,
   };
 
+  // ── Save ──────────────────────────────────────────────────────────────────
   async function handleSave() {
+    // Mark all tabs as attempted so all errors surface
+    setAttempted(new Set(TAB_ORDER));
+    if (isLinkhub && (!profileValid || !linksValid)) {
+      // Navigate to first invalid tab
+      const first = TAB_ORDER.find((tab) => errorForTab(tab));
+      if (first) setActiveTab(first);
+      return;
+    }
     setSaving(true);
     try {
-      // Filter out incomplete links (missing URL) and strip undefined values
-      // to prevent Next.js "$undefined" serialization issues in production
       const cleanLinks = links.filter((l) => l.url && l.url.trim() !== "");
       const cleanLandingData: LandingData = stripUndefined({
         title,
@@ -133,7 +178,6 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
             }
           : undefined,
       });
-
       await onSave(stripUndefined({
         targetUrl,
         title,
@@ -153,6 +197,7 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
     if (bs) setButtonStyle(bs);
   }
 
+  // ── Buttons ───────────────────────────────────────────────────────────────
   const saveBtn = (
     <button
       type="button"
@@ -164,7 +209,29 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
     </button>
   );
 
-  // ── Redirect mode: single centered column ─────────────────────────────────
+  const isLastTab  = activeTab === TAB_ORDER[TAB_ORDER.length - 1];
+  const currentErr = attempted.has(activeTab) ? errorForTab(activeTab) : null;
+
+  const wizardNextBtn = (
+    <div className="space-y-2">
+      {currentErr && (
+        <p className="text-center text-xs text-shu">{currentErr}</p>
+      )}
+      {isLastTab ? saveBtn : (
+        <button
+          type="button"
+          onClick={handleNext}
+          className="w-full rounded-xl bg-beni py-3 text-sm font-medium text-white transition-colors hover:bg-beni/90"
+        >
+          {t("next")} →
+        </button>
+      )}
+    </div>
+  );
+
+  const actionBtn = wizard ? wizardNextBtn : saveBtn;
+
+  // ── Redirect mode ─────────────────────────────────────────────────────────
   if (!isLinkhub) {
     return (
       <div className="flex flex-1 justify-center px-4 py-8 sm:px-6">
@@ -185,10 +252,13 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
     );
   }
 
-  // ── Linkhub mode: tab-based layout ───────────────────────────────────────
+  // ── Linkhub mode ──────────────────────────────────────────────────────────
   const tabPanelProps = {
     activeTab,
-    onTabChange: setActiveTab,
+    onTabChange: handleTabChange,
+    wizard,
+    tabValidity: { profile: profileValid, links: linksValid, design: true },
+    tabAttempted: attempted,
     title,
     bio,
     avatar,
@@ -209,7 +279,7 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain" style={{ paddingBottom: "calc(56px + max(8px, env(safe-area-inset-bottom)))" }}>
           <EditorTabPanel {...tabPanelProps} hideTabBar />
           <div className="px-4 pb-4 pt-2">
-            {saveBtn}
+            {actionBtn}
           </div>
         </div>
       </div>
@@ -224,28 +294,31 @@ export function LinkEditor({ mode, initial, onSave, saveLabel, onDirtyChange }: 
         </div>
       )}
 
-      {/* ── MOBILE: bottom tab bar (always visible in linkhub mode) ── */}
+      {/* ── MOBILE: bottom tab bar ── */}
       <MobileTabBar
         view={mobileView}
         activeTab={activeTab}
+        wizard={wizard}
+        tabValidity={{ profile: profileValid, links: linksValid, design: true }}
+        tabAttempted={attempted}
         onViewChange={setMobileView}
         onTabChange={(tab) => {
-          setActiveTab(tab);
+          handleTabChange(tab);
           setMobileView("editor");
         }}
       />
 
-      {/* ── DESKTOP: editor column (40%) ── */}
+      {/* ── DESKTOP: editor column ── */}
       <div className="hidden lg:flex lg:w-[40%] lg:flex-col lg:overflow-hidden lg:border-r lg:border-hai/30">
         <div className="flex-1 overflow-y-auto">
           <EditorTabPanel {...tabPanelProps} />
         </div>
         <div className="border-t border-hai/30 px-5 py-4">
-          {saveBtn}
+          {actionBtn}
         </div>
       </div>
 
-      {/* ── DESKTOP: preview column (60%) ── */}
+      {/* ── DESKTOP: preview column ── */}
       <div className="hidden lg:flex lg:w-[60%] lg:flex-col lg:overflow-hidden">
         <PreviewPanel data={landingData} />
       </div>

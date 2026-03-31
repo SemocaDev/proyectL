@@ -8,6 +8,9 @@ type MobileView = "editor" | "preview";
 interface MobileTabBarProps {
   view: MobileView;
   activeTab: EditorTab;
+  wizard?: boolean;
+  tabValidity?: Record<EditorTab, boolean>;
+  tabAttempted?: Set<EditorTab>;
   onViewChange: (v: MobileView) => void;
   onTabChange: (tab: EditorTab) => void;
 }
@@ -45,17 +48,49 @@ function IconEye({ className }: { className?: string }) {
   );
 }
 
-export function MobileTabBar({ view, activeTab, onViewChange, onTabChange }: MobileTabBarProps) {
+const TAB_ICONS: Record<EditorTab, React.ReactNode> = {
+  profile: <IconProfile className="h-5 w-5" />,
+  links:   <IconLinks   className="h-5 w-5" />,
+  design:  <IconDesign  className="h-5 w-5" />,
+};
+
+export function MobileTabBar({
+  view, activeTab, wizard, tabValidity, tabAttempted, onViewChange, onTabChange,
+}: MobileTabBarProps) {
   const t = useTranslations("editor");
 
-  const editorTabs: { id: EditorTab; label: string; icon: React.ReactNode }[] = [
-    { id: "profile", label: t("tabProfile"), icon: <IconProfile className="h-5 w-5" /> },
-    { id: "links",   label: t("tabLinks"),   icon: <IconLinks   className="h-5 w-5" /> },
-    { id: "design",  label: t("tabDesign"),  icon: <IconDesign  className="h-5 w-5" /> },
+  const editorTabs: { id: EditorTab; label: string }[] = [
+    { id: "profile", label: t("tabProfile") },
+    { id: "links",   label: t("tabLinks")   },
+    { id: "design",  label: t("tabDesign")  },
   ];
 
   function isTabActive(id: EditorTab) {
     return view === "editor" && activeTab === id;
+  }
+
+  function tabBadge(id: EditorTab) {
+    if (!wizard || !tabValidity || !tabAttempted) return null;
+    const valid    = tabValidity[id];
+    const tried    = tabAttempted.has(id);
+    const isDesign = id === "design";
+    if (valid || isDesign) {
+      // show check only if the user has visited / attempted this tab
+      if (tried || isTabActive(id)) {
+        return (
+          <span className="absolute -top-0.5 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-uguisu text-[8px] text-white">
+            ✓
+          </span>
+        );
+      }
+    } else if (tried) {
+      return (
+        <span className="absolute -top-0.5 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-shu text-[8px] text-white">
+          !
+        </span>
+      );
+    }
+    return null;
   }
 
   return (
@@ -63,7 +98,6 @@ export function MobileTabBar({ view, activeTab, onViewChange, onTabChange }: Mob
       className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-hai/40 bg-white lg:hidden"
       style={{ paddingBottom: "max(8px, env(safe-area-inset-bottom))" }}
     >
-      {/* Editor tabs */}
       {editorTabs.map((tab) => (
         <button
           key={tab.id}
@@ -72,7 +106,7 @@ export function MobileTabBar({ view, activeTab, onViewChange, onTabChange }: Mob
             onTabChange(tab.id);
             if (view === "preview") onViewChange("editor");
           }}
-          className={`flex flex-1 flex-col items-center gap-0.5 px-1 pt-2 pb-1 text-[10px] font-medium transition-colors ${
+          className={`relative flex flex-1 flex-col items-center gap-0.5 px-1 pt-2 pb-1 text-[10px] font-medium transition-colors ${
             isTabActive(tab.id)
               ? "text-beni"
               : view === "preview"
@@ -80,19 +114,19 @@ export function MobileTabBar({ view, activeTab, onViewChange, onTabChange }: Mob
                 : "text-ginnezumi/60 hover:text-sumi"
           }`}
         >
-          {tab.icon}
+          <span className="relative">
+            {TAB_ICONS[tab.id]}
+            {tabBadge(tab.id)}
+          </span>
           {tab.label}
         </button>
       ))}
 
-      {/* Preview tab */}
       <button
         type="button"
         onClick={() => onViewChange(view === "preview" ? "editor" : "preview")}
         className={`flex flex-1 flex-col items-center gap-0.5 px-1 pt-2 pb-1 text-[10px] font-medium transition-colors ${
-          view === "preview"
-            ? "text-beni"
-            : "text-ginnezumi/60 hover:text-sumi"
+          view === "preview" ? "text-beni" : "text-ginnezumi/60 hover:text-sumi"
         }`}
       >
         <IconEye className="h-5 w-5" />
